@@ -3,8 +3,6 @@ title: What is a JIT compiler anyway?
 date: 2022-07-06
 ---
 
-<!---->
-
 My bachelor theses is in the field of just-in-time(JIT) compiler research and while
 this already sounds very advanced (which I absolutely love) this is my attempt at
 explaining it to a non technical audience.
