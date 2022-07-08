@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>flofriday.dev</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <main class="content">
+        <h1>I am flofriday</h1>
+        <p>
+            a computer-science student at TU Wien (Austria).
+            I am interested in all things related to computers from webservers
+            over games to simple scripts.
+        </p>
+        <p>
+            <a href="https://github.com/flofriday">GitHub</a>
+        </p>
+
+        <h2>Blog Posts</h2>
+        <ul>
+            {% for p in previews %}
+            <li>
+                <i>
+                    {{p.date}}
+                </i>
+                &nbsp;
+                <strong>
+                    <a href="{{ p.url }}">{{p.title}}</a>
+                </strong>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+
+</html>
