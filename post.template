@@ -23,6 +23,10 @@ In this template you can use the following variables, with the Jinja2 sytax:
 
         {{content|safe}}
     </main>
+
+    <footer class="content" style="text-align: right; padding-top: 24px; padding-bottom: 12px">
+        <i> - <a href="/" style="color:black"> flofriday </a></i>
+    </footer>
 </body>
 
 </html>

@@ -3,20 +3,21 @@ title: What is a JIT compiler anyway?
 date: 2022-07-06
 ---
 
-My bachelor theses is in the field of just-in-time(JIT) compiler research and while
+My bachelor thesis is in the field of just-in-time(JIT) compiler research and while
 this already sounds very advanced (which I absolutely love) this is my attempt at
 explaining it to a non technical audience.
 
-## The _normal_ compiler
+## The _"normal"_ compiler
 
 ![Drawing AOT](Drawing_AOT.excalidraw.png)
 
 As you probably know from movies, computers can only understand binary (ones and zeros).
-Contrary programmers and hackers in movies, we don't program in binary and just
-like you cannot read binary (well some can read basic binary, but it's still a lot slower
-and I definitely can't).
+Contrary to programmers and hackers in movies, we don't program in binary and just
+like you cannot read binary
+(well, [some can read basic binary](https://www.youtube.com/watch?v=wCQSIub_g7M),
+but it's still a lot slower and I definitely can't).
 
-So the solution is to write something in a programming language which is more
+So the solution is to write something in an programming language which is more
 like english text. Then we use a program to translate it to the binary machine code.
 The translation program is what we call a compiler.
 
@@ -52,12 +53,12 @@ this approach.
 
 ![Drawing JIT](Drawing_JIT.excalidraw.png)
 
-To improve the performance you can compile (parts of) a program to machine code as you are about to run it. These compilers are called just-in-time (JIT) compilers. Like an interpreter you can just send the user the source code and don't have to compile it for each target. However, unlike an interpreter the application will be a lot faster.
+To improve the performance you can compile (parts of) a program to machine code as you are about to run it. These compilers are called just-in-time(JIT) compilers. Like an interpreter you can just send the user the source code and don't have to compile it for each target. However, unlike an interpreter the application will be a lot faster.
 
-JIT compiler are often integrated into Interpreters. The interpreter starts running a code and generates metrics about the code it runs. Once the interpreter finds a piece of the code that gets run often it will compile this piece with an JIT compiler to machine code which is a lot faster. These interpreters don't compile everything imediatly to machine code because the compilation itself also takes some time and for code that isn't executed often it is faster to just interpret it than to compile it to fast machine code.
+JIT compilers are often integrated into Interpreters. The interpreter starts running a code and generates metrics about the code it runs. Once the interpreter finds a piece that gets run often it will compile this piece with a JIT compiler to machine code which is a lot faster to execute. These interpreters don't compile everything immediately to machine code because the compilation itself also takes some time and for code that isn't executed often it is faster to just interpret it than to compile it to fast machine code.
 
-## Conclusion
+## Remarks
 
-I have simplified many concepts here, and I am also not an expert in the field.
-So it is quite possible that I have missed something important or that I got some
-thing wrong, so please feel free to create an issue if that's the case.
+I have simplified many concepts here, and I could definitely geek out on very
+specific details, but I hope you got an overview about the topic of my bachelor
+thesis.
