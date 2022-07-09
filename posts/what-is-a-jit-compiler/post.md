@@ -11,34 +11,40 @@ explaining it to a non technical audience.
 
 ![Drawing AOT](Drawing_AOT.excalidraw.png)
 
-As you know from movies, computers can only understand binary (ones and zeros).
-Contrary to most movies programmers and hackers don't program in binary and just
+As you probably know from movies, computers can only understand binary (ones and zeros).
+Contrary programmers and hackers in movies, we don't program in binary and just
 like you cannot read binary (well some can read basic binary, but it's still a lot slower
 and I definitely can't).
 
-So the solution is to write something in (english) text that is readable by humans and
-then use a program to translate it to the binary machine code. The translation program
-is what we call a compiler.
+So the solution is to write something in a programming language which is more
+like english text. Then we use a program to translate it to the binary machine code.
+The translation program is what we call a compiler.
 
 The classical compiler is a so called ahead-of-time (AoT) compiler, which means the
-developer how writes the app also runs the compiler for your machine and then
+developer who writes the app also runs the compiler for your machine and then
 sends you the compiled binary, which your computer just takes and runs.
 
 ## The Interpreter
 
 ![Drawing Interpreter](Drawing_Interpreter.excalidraw.png)
-Computers can be grouped into different Architectures where each architecture has a different set of instructions it understands. The most common architecture of Laptops and Desktops is x86 64bit and for Smartphones it is ARM 64bit.
 
-So one disadvantage from Compilers is that for each Architecture and for each
+Computers can be grouped into different Architectures where each architecture
+has a different set of instructions it understands.
+The most common architecture for Laptops and Desktops currently is
+[x86 64bit](https://en.wikipedia.org/wiki/X86-64) and for Smartphones it is
+[ARM 64bit](https://en.wikipedia.org/wiki/ARM_architecture_family).
+
+So one disadvantage from compilers is that for each architecture and for each
 Operating System you need to compile the Application. So if you want to have your
 new app run on Linux, macOS and Windows for x86 and ARM you need to compile
 your app 6 times.
 
 One Solution here is to write your application in an language that is interpreted so that
-the you can ship the user directly the source code which they then interpret.
+you can ship the user directly the source code which they then interpret.
 
 However, this normally results in Applications that are a lot slower
-(about 40-100 times). For many use cases this is acceptable but there is a solution for that.
+(about 40-100 times). For many use cases this is acceptable but we can still improve
+this approach.
 
 > **Note:** The speed I reference here is pure computational. However there might be many other reasons an application _feels_ slow.
 
