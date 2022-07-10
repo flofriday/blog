@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!--
-In this template you can use the following variables, with the Jinja2 sytax: 
-    title:      A string containing the title of the blog post.
-    date:       A string containing the publish date.
-    content:    A string containing the html of the actual blog post.
--->
-
 <head>
-    <title>{{title}}</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="description" content="" />
+
+    <title>{{title}} | flofriday.dev</title>
+    <!-- <link rel="alternate icon" href="/favicon.ico" type="image/x-icon" sizes="48x48" /> -->
+
+    <meta name="title" content="{{title}}">
+    <meta name="author" content="flofriday">
+    <meta name="description" content="{{description}}">
+    <meta name="keywords" content="" />
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{title}}">
+    <!-- <meta property="og:url" content=""> -->
+    <meta property="og:title" content="{{title}}">
+    <meta property="og:description" content="{{description}}">
+    <meta property="og:image" content="{{image}}">
+
+    <meta property="twitter:card" content="summary">
+    <!-- <meta property="twitter:url" content=""> -->
+    <meta property="twitter:title" content="{{title}}">
+    <meta property="twitter:description" content="{{description}}">
+    <meta property="twitter:image" content="{{image}}">
+
     <link rel="stylesheet" href="/style.css">
 </head>
 

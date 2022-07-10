@@ -1,6 +1,8 @@
 ---
 title: What is a JIT compiler anyway?
 date: 2022-07-06
+description: My bachelor thesis is in the field of just-in-time(JIT) compiler research and while this already sounds...
+image: Drawing_JIT.excalidraw.png
 ---
 
 My bachelor thesis is in the field of just-in-time(JIT) compiler research and while
