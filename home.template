@@ -17,14 +17,14 @@
     <meta property="og:title" content="flofriday.dev">
     <meta property="og:description"
         content="Hi, I am flofriday, I love to play with software and to build crazy tings.">
-    <meta property="og:image" content="/profile.jpeg">
+    <meta property="og:image" content="https://flofriday.dev/profile.jpeg">
 
     <meta property="twitter:card" content="summary">
     <!-- <meta property="twitter:url" content=""> -->
     <meta property="twitter:title" content="flofriday.dev">
     <meta property="twitter:description"
         content="Hi, I am flofriday, I love to play with software and to build crazy tings.">
-    <meta property="twitter:image" content="/profile.jpeg">
+    <meta property="twitter:image" content="https://flofriday.dev/profile.jpeg">
 
     <link rel="stylesheet" href="/style.css">
 </head>
