@@ -6,7 +6,7 @@ My personal blog build with my custom static site generator
 ## Usage
 
 ```
-hellfire .
+hellfire build .
 ```
 
 ## Contribution
