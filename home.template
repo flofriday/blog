@@ -17,20 +17,25 @@
     <meta property="og:title" content="flofriday.dev">
     <meta property="og:description"
         content="Hi, I am flofriday, I love to play with software and to build crazy tings.">
-    <meta property="og:image" content="https://flofriday.dev/profile.jpeg">
+    <meta property="og:image" content="https://flofriday.dev/flofriday.jpg">
 
-    <meta property="twitter:card" content="summary">
+    <meta property="twitter:card" content="summary_large_image">
     <!-- <meta property="twitter:url" content=""> -->
     <meta property="twitter:title" content="flofriday.dev">
     <meta property="twitter:description"
         content="Hi, I am flofriday, I love to play with software and to build crazy tings.">
-    <meta property="twitter:image" content="https://flofriday.dev/profile.jpeg">
+    <meta property="twitter:image" content="https://flofriday.dev/flofriday.jpg">
 
+    <link rel="icon" type="image/jpg" href="/flofriday.jpg">
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <main class="content">
+
+        <div style="width:100%; display: flex; margin: 24px;">
+            <img src="/flofriday.jpg" alt="" style="border-radius:50%; width:142px;">
+        </div>
         <h1>I am flofriday</h1>
         <p>
             a computer-science student at
