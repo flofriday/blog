@@ -51,13 +51,15 @@
         <ul>
             {% for p in previews %}
             <li>
-                <i>
-                    {{p.date}}
-                </i>
-                &nbsp;
-                <strong>
-                    <a href="{{ p.url }}">{{p.title}}</a>
-                </strong>
+                <p>
+                    <i>
+                        {{p.date}}
+                    </i>
+                    &nbsp;
+                    <strong>
+                        <a href="{{ p.url }}">{{p.title}}</a>
+                    </strong>
+                </p>
             </li>
             {% endfor %}
         </ul>
