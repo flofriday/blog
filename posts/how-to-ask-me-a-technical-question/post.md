@@ -1,7 +1,6 @@
 ---
 title: How to ask (me) a technical question.
 date: 2022-07-20
-draft: true
 description: I love helping people solve their problems, but sometimes it is just an exhausting experience.
 ---
 
