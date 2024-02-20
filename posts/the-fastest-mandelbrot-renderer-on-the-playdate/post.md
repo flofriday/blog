@@ -15,7 +15,7 @@ To develop for the playdate the SDK also comes with a Simulator which usually ru
 
 ## Some base rules
 
-Before we jump down the optimization rabbit whole, here are some things that never changed. The set is always rendered at the playdates native resolution and it always uses 64 iterations to determine if a pixel is part of the set.
+Before we jump down the optimization rabbit hole, here are some things that never changed. The set is always rendered at the playdates native resolution and it always uses 64 iterations to determine if a pixel is part of the set.
 
 ## The unoptimized approach
 
