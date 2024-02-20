@@ -28,7 +28,7 @@ So yeah some optimizations will be needed, but just to be curious how long does 
 
 ![crash](crash.jpeg)
 
-Yeah, that doesn't look too good, but hey at least we only need to get a 263x speedup to get a smooth 30 frames per second in the simulator. So yeah the naive approach even failed at getting a baseline on real hardware so for we can only compare the simulator performance.
+Yeah, that doesn't look too good, but hey at least we only need to get a 263x speedup to get a smooth 30 frames per second in the simulator. So yeah the naive approach even failed at getting a baseline on real hardware so far we can only compare the simulator performance.
 
 Before we jump now straight into C it might be useful to inspect the code and see if Lua can perform better. Since Lua doesn't have a complex number type like C I created my own which looks looks like this:
 
@@ -136,7 +136,7 @@ The fix point numbers just aren't precise enough to capture the beauty of the ma
 
 Now, at this point I don't really have any ideas left for further optimizations without compromising quality too much. If you have any ideas on how to improve the code is available [on github](https://github.com/flofriday/mandelbrot-playdate), but until then I will call this the fastest Mandelbrot renderer on the playdate. 
 
-The game is actually quite fun to play with even at only about ~14FPS and I am still quite proud of the **2640x speedup** we archived. 
+The game is actually quite fun to play with even only with about ~14FPS and I am still quite proud of the **2640x speedup** we archived. 
 
 Therefore, I decided to polish and publish the game. I added some ui to indicate the movement and a menu to disable the FPS counter.
 
