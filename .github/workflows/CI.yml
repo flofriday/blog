@@ -20,8 +20,7 @@ jobs:
         script: |
           cd blog
           git pull
-          cd ../hellfire
-          git pull
-          python3.9 -m pip install -r requirements.txt
-          python3.9 hellfire.py build --clean --out /home/blog/html ../blog
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python hellfire.py build --clean --out /home/blog/html
 

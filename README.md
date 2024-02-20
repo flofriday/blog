@@ -1,12 +1,17 @@
 # blog
 
-My personal blog build with my custom static site generator
-[hellfire](https://github.com/flofriday/hellfire).
-
+My personal blog build with my custom static site generator .
 ## Usage
 
+First you need to install all requirements with:
 ```
-hellfire build .
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+```
+python hellfire.py build .
 ```
 
 ## Contribution
