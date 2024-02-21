@@ -9,7 +9,7 @@ description: Jumping down the optimization rabbit whole to view fractals.
 
 One of the joys in my life is writing Mandelbrot renderers on platforms or languages that weren't designed for it. So as my playdate arrived last week I knew it was only a matter of time till it would display the fractal. 
 
-The Playdate is low powered handheld game console with a 400x240 monochrome pixel display and comes with a Lua and C SDK. While most games are written in Lua the C bindings are quite handy to squeeze out every drop of performance.
+The Playdate is a low powered handheld game console with a 400x240 monochrome pixel display and comes with a Lua and C SDK. While most games are written in Lua the C bindings are quite handy to squeeze out every drop of performance.
 
 To develop for the playdate the SDK also comes with a Simulator which usually runs a lot faster but at least for Lua Code the performance can be throttled to simulate the real hardware.
 
@@ -22,9 +22,9 @@ Before we jump down the optimization rabbit hole, here are some things that neve
 Sure the playdate might be low powered but before digging into obscure optimizations I wanted to get a baseline and wrote a naive Mandelbrot renderer in Lua. Which displays this:
 
  ![](screenshot_naive.png)
-After 8.7 seconds. In the Simulator. Without throttling performance.
+After 8.7 seconds ... in the Simulator ... without throttling performance.
 
-So yeah some optimizations will be needed, but just to be curious how long does it take on the real hardware?
+So yeah some optimizations will be needed, but just out of curiosity how long does it take on the real hardware?
 
 ![crash](crash.jpeg)
 
@@ -64,13 +64,13 @@ Further profiling doesn't reveal anything interesting as the profiler only works
 
 ## Rendering in C
 
-Porting the Lua code from the previous step to C shortens the time to 600ms on the Playdate, a **13x speedup**. This means we are hitting comfortable the 30FPS in the Simulator and even on the hardware we no longer count the seconds per frame but the frames per second, which are just below two, but still.
+Porting the Lua code from the previous step to C shortens the time to 600ms on the Playdate, a **13x speedup**. This means we are hitting the 30FPS mark comfortably in the simulator and even on the hardware we no longer count the seconds per frame but the frames per second, which are just below two, but still.
 
-Now here I got a little stuck, first I applied an optimization that exploits mathematics and only needs two multiplications instead of 5 per loop iteration but that only reduced the time by 100ms to 500ms.
+Now here I got a little stuck, first I applied an optimization that exploits mathematics and only needs two instead of five multiplications per loop iteration but that only reduced the time by 100ms.
 
 Replacing the drawRect function (for some reason there is no drawPixel function in the C API but in the Lua API) with getting the frame-buffer and modifying it directly further shortened the time to 270ms.
 
-I also tried to detect periods up to a length of 20, but this decreased performance back to 330m, even though it could detect periods. I assume this is because we are already doing quite few iterations (just 64) compared to other implementations and therefore even if we detect a period we don't save that much time but every time we don't detect a period we still have to calculate the checks.
+I also tried to detect periods up to a length of 20, but this decreased performance back to 330ms, even though it could detect periods. I assume this is because we are already doing quite few iterations (just 64) compared to other implementations and therefore even if we detect a period we don't save that much time but every time we don't detect a period we still have to calculate the checks.
 
 In total I managed to reach a **30x speedup** over the Lua version. However three to four frames per second aren't that impressive and since this algorithms has no obvious bottlenecks we probably need to implement a more sophisticated one.
 
@@ -81,12 +81,12 @@ Since the mandelbrot is a connected structure without any wholes, we can fill a 
 ![](screenshot_subdivision.png)
 This lowers the time to 120ms, a little bit over a 2x speedup. At first this was somewhat underwhelming but my first naive implementation of this algorithm can be improved. For example neighboring cells don't share a border which means that the border between them is two pixels wide and gets calculated twice. Even worse, a cell that subdivides discards all calculations that were made in the previous iteration and does them again.
 
-After spending way more time than I would have liked optimizing the algorithm to share borders between cells and caching already the calculated results (I use the frame buffer as a cache here) I got it to about 86ms about 11FPS. In total this is a **3x speedup** over the naive C version.
+After spending way more time than I would have liked optimizing the algorithm to share borders between cells and caching the already calculated results (I use the frame buffer as a cache here) I got it to about 86ms (~11FPS). In total this is a **3x speedup** over the naive C version.
 
 At this point I should probably mention that while recursive subdivision works flawlessly in theory, it produces some graphical glitches _popping_ in practice. This is because while the set is connected, it could be that the pixels on the border of the cell don't catch it. However, I will keep this optimization as it is just so performant.
 ## Further Profiling
 
-Next I discovered that the ARM compiler was four years old, and while GCC is a very stable compiler I  didn't want to leave anything up to chance and updated to newest version. Unsurprisingly this didn't impact performance measurable.
+Next I discovered that the ARM compiler was four years old, and while GCC is a very stable compiler I  didn't want to leave anything up to chance and updated to newest version. Unsurprisingly this didn't impact the performance measurable.
 
 I also added the flags  `-flto -finline-functions -funroll-loops  -ffast-math` to the compiler which lowered the time to 67ms. The fast math is quite unsave and can have undesired behavior, however I read through the optimizations it employs and it seems safe for our purpose.
 
@@ -127,7 +127,7 @@ inline fix32_t fix32_mul(fix32_t a, fix32_t b) {
 
 And after a lot of bit manipulation I got the frame time down to 43ms about 23FPS which is very close to our 30FPS goal.
 
-However, you don't have to be a furious fractal freak quickly notice that our Mandelbrot isn't doing so well.
+However, you don't have to be a furious fractal freak to quickly notice that our Mandelbrot isn't doing so well.
 
 ![](screenshot_fixpoint.png)
 The fix point numbers just aren't precise enough to capture the beauty of the mandelbrot set.
