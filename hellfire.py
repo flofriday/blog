@@ -2,10 +2,10 @@ import argparse
 from dataclasses import dataclass, field
 from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from meltdown import MarkdownParser, HtmlProducer
 import os
 import re
 import shutil
-import subprocess
 
 from jinja2 import Template, select_autoescape
 import toml
@@ -16,15 +16,6 @@ DATE_FORMAT = "%d %b, %Y"
 
 
 def verify_setup(src: str, dst: str):
-    # Check that pandoc is installed
-    if not shutil.which("pandoc"):
-        print(
-            "🔥 Pandoc is not installed (or maybe just not in the path)\n"
-            "hellfire requires pandoc, which can be installed from:\n"
-            "https://pandoc.org/installing.html"
-        )
-        exit(1)
-
     # Verify the source directory is in good health
     if not os.path.isdir(src):
         raise Exception(f"The source directory `{src}` doesn't exist")
@@ -100,6 +91,7 @@ def copy_files(src: str, dst: str, exceptions: list[str] = None):
 
 @dataclass
 class PostMetadata:
+    name: str = None
     title: str = None
     date: datetime = None
     is_draft: bool = False
@@ -108,36 +100,15 @@ class PostMetadata:
     other: dict[str, str] = field(default_factory=dict)
 
 
-# This is a very simple frontmatter parser, it only supports simple yaml key
-# value attributes.
-# TODO: We can no longer cache this because it might change when we run the
-# serve command. But now it will run twice during a build and also show the
-# errors twice, which should be fixed in the future.
-# @lru_cache(maxsize=512)
-def load_post_metadata(src: str, post: str, base_url) -> PostMetadata:
-    post_path = os.path.join(src, "posts", post, "post.md")
-    with open(post_path) as md:
-        # TODO: read the lines lazy
-        lines = map(lambda l: l.strip(), md.readlines())
-
-    meta = PostMetadata()
+# Formats from an unstructured dictionary to the PostMetadata structure and
+# does some data clearance
+def load_post_metadata(
+    raw_metadata: dict[str, str], post: str, base_url: str
+) -> PostMetadata:
+    meta = PostMetadata
+    meta.name = post
     other = {}
-    in_frontmatter = False
-    for line in lines:
-        # Parse the data
-        if line == "---":
-            if in_frontmatter:
-                break
-            in_frontmatter = True
-            continue
-
-        if not in_frontmatter:
-            break
-
-        key, value = line.split(":")
-        key = key.strip()
-        value = value.strip()
-
+    for key, value in raw_metadata.items():
         # Store the data
         if key == "date":
             meta.date = datetime.strptime(value, "%Y-%m-%d")
@@ -158,21 +129,21 @@ def load_post_metadata(src: str, post: str, base_url) -> PostMetadata:
     if meta.title is None:
         # TODO: take the filename
         meta.title = "No title available"
-        print(f"⚠️ Post '{post_path}' doesn't have a title in the metadata.")
+        print(f"⚠️ Post '{post}' doesn't have a title in the metadata.")
 
     if meta.date is None:
-        meta.date = datetime.fromtimestamp(os.path.getmtime(post_path))
-        print(f"⚠️ Post '{post_path}' doesn't have a date in the metadata.")
+        meta.date = datetime.fromtimestamp(os.path.getmtime(post))
+        print(f"⚠️ Post '{post}' doesn't have a date in the metadata.")
 
     if meta.description is None:
         # TODO: We could parse the text and add the start of the post by default
         meta.description = ""
-        print(f"⚠️ Post '{post_path}' doesn't have a description in the metadata.")
+        print(f"⚠️ Post '{post}' doesn't have a description in the metadata.")
 
     if meta.image is None:
-        # We should by default link to the profile picture or something
+        # TODO: We should by default link to the profile picture or something
         meta.image = ""
-        print(f"⚠️ Post '{post_path}' doesn't have a image in the metadata.")
+        print(f"⚠️ Post '{post}' doesn't have a image in the metadata.")
 
     return meta
 
@@ -197,7 +168,9 @@ def compile_home(src: str, dst: str, config: dict):
     previews = []
     for post in posts:
         # Load the metadata and don't show drafts at the homepage.
-        meta = load_post_metadata(src, post, config["url"])
+        with open(os.path.join(src, "posts", post, "post.md")) as f:
+            doc = MarkdownParser().parse(f.read())
+        meta = load_post_metadata(doc.metadata, post, config["url"])
         if meta.is_draft:
             continue
 
@@ -242,35 +215,16 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
         return
 
     # Compile the markdown to html
-    pandoc = subprocess.run(
-        [
-            "pandoc",
-            "--from",
-            "gfm",
-            "--to",
-            "html",
-            post_path,
-        ],
-        # shell=True,
-        capture_output=True,
-        text=True,
-    )
-
-    if pandoc.returncode != 0:
-        print(
-            f"🔥 '{' '.join(pandoc.args)}' failed with error code {pandoc.returncode}\n"
-            "Visit this for more information: https://pandoc.org/MANUAL.html#exit-codes\n"
-            "Pandocs error: ",
-            pandoc.stderr,
-        )
-        return
+    with open(post_path) as f:
+        doc = MarkdownParser().parse(f.read())
+    html = HtmlProducer().produce(doc)
 
     # Write the complete document
-    meta = load_post_metadata(src, post, config["url"])
+    meta = load_post_metadata(doc.metadata, post, config["url"])
     with open(html_path, "w") as f:
         f.write(
             template.render(
-                content=pandoc.stdout,
+                content=html,
                 title=meta.title,
                 description=meta.description,
                 image=meta.image,
@@ -324,7 +278,7 @@ def serve(args):
     print(
         "\n"
         "🚀 Development server started on http://localhost:8000\n"
-        "️WARNING: Do not use this in production!\n"
+        "WARNING: Do not use this in production!\n"
     )
 
     # Start the File Watcher
@@ -370,8 +324,8 @@ def new_post(args):
     # Create all used variables
     title = args.title
     date = datetime.now().strftime("%Y-%m-%d")
-    whitespace_pattern = re.compile("(\s|-)+")
-    path_pattern = re.compile("[^a-zA-Z0-9\-]+")
+    whitespace_pattern = re.compile(r"(\s|-)+")
+    path_pattern = re.compile(r"[^a-zA-Z0-9\-]+")
     title_path = whitespace_pattern.sub("-", title)
     title_path = path_pattern.sub("", title_path)
     title_path = title_path.lower()
