@@ -39,6 +39,7 @@ a:visited {
 
 img {
   max-width: 100%;
+  max-height: 50vh;
   margin-left: auto;
   margin-right: auto;
   display: block;
