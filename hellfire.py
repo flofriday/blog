@@ -1,8 +1,11 @@
 import argparse
 from dataclasses import dataclass, field
 from datetime import datetime
+import html
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from typing import Self
 from meltdown import MarkdownParser, HtmlProducer
+from meltdown.Nodes import CodeBlockNode
 import os
 import re
 import shutil
@@ -126,7 +129,7 @@ def load_post_metadata(
             other[key] = value
 
     # Fill in the blanks with warnings
-    if meta.title is None:
+    if meta.title is None or meta.title.strip() == "":
         # TODO: take the filename
         meta.title = "No title available"
         print(f"⚠️ Post '{post}' doesn't have a title in the metadata.")
@@ -140,10 +143,8 @@ def load_post_metadata(
         meta.description = ""
         print(f"⚠️ Post '{post}' doesn't have a description in the metadata.")
 
-    if meta.image is None:
-        # TODO: We should by default link to the profile picture or something
-        meta.image = ""
-        print(f"⚠️ Post '{post}' doesn't have a image in the metadata.")
+    if meta.image is None or meta.image.strip() == "":
+        meta.image = base_url + "/flofriday.jpg"
 
     return meta
 
@@ -198,6 +199,16 @@ def compile_home(src: str, dst: str, config: dict):
     copy_files(src, dst, exceptions=["home.template", "post.template", "config.toml"])
 
 
+class HellfireHtmlProducer(HtmlProducer):
+    def visit_code_block(self: Self, node: CodeBlockNode):
+        self._output += "<pre"
+        if node.language is not None:
+            self._output += f' class="language-{node.language}"'
+        self._output += "><code>"
+        self._output += html.escape(node.code)
+        self._output += "</code></pre>\n"
+
+
 def compile_post(post: str, template: Template, src: str, dst: str, config: dict):
     # Also copy all files from the dir to dst
     post_dir = os.path.join(src, "posts", post)
@@ -217,7 +228,7 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
     # Compile the markdown to html
     with open(post_path) as f:
         doc = MarkdownParser().parse(f.read())
-    html = HtmlProducer().produce(doc)
+    html = HellfireHtmlProducer().produce(doc)
 
     # Write the complete document
     meta = load_post_metadata(doc.metadata, post, config["url"])
