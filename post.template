@@ -38,8 +38,9 @@
   <body>
     <main class="content">
       <h1>{{ title }}</h1>
-      <p>
+      <p style="width: 100%; display: flex; justify-content: space-between">
         <i>{{ date }}</i>
+        <i>by <a href="/">flofriday</a></i>
       </p>
 
       {{ content | safe }}
