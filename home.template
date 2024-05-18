@@ -1,69 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>flofriday.dev</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <meta name="title" content="flofriday.dev">
-    <meta name="author" content="flofriday">
-    <meta name="description" content="Hi, I am flofriday, I love to play with software and to build crazy things.">
+    <meta name="title" content="flofriday.dev" />
+    <meta name="author" content="flofriday" />
+    <meta
+      name="description"
+      content="Hi, I am flofriday, I love to play with software and to build crazy things."
+    />
     <meta name="keywords" content="" />
 
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="flofriday.dev">
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="flofriday.dev" />
     <!-- <meta property="og:url" content=""> -->
-    <meta property="og:title" content="flofriday.dev">
-    <meta property="og:description"
-        content="Hi, I am flofriday, I love to play with software and to build crazy tings.">
-    <meta property="og:image" content="https://flofriday.dev/flofriday.jpg">
+    <meta property="og:title" content="flofriday.dev" />
+    <meta
+      property="og:description"
+      content="Hi, I am flofriday, I love to play with software and to build crazy tings."
+    />
+    <meta property="og:image" content="https://flofriday.dev/flofriday.jpg" />
 
-    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:card" content="summary_large_image" />
     <!-- <meta property="twitter:url" content=""> -->
-    <meta property="twitter:title" content="flofriday.dev">
-    <meta property="twitter:description"
-        content="Hi, I am flofriday, I love to play with software and to build crazy tings.">
-    <meta property="twitter:image" content="https://flofriday.dev/flofriday.jpg">
+    <meta property="twitter:title" content="flofriday.dev" />
+    <meta
+      property="twitter:description"
+      content="Hi, I am flofriday, I love to play with software and to build crazy tings."
+    />
+    <meta
+      property="twitter:image"
+      content="https://flofriday.dev/flofriday.jpg"
+    />
 
-    <link rel="icon" type="image/jpg" href="/flofriday.jpg">
-    <link rel="stylesheet" href="/style.css">
-</head>
+    <link rel="icon" type="image/jpg" href="/flofriday.jpg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
 
-<body>
+  <body>
     <main class="content">
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          margin-top: 24px;
+          margin-bottom: 24px;
+        "
+      >
+        <img
+          src="/flofriday.jpg"
+          alt=""
+          style="border-radius: 50%; width: 142px"
+        />
+      </div>
+      <h1>I am flofriday</h1>
+      <p>
+        a computer-science student at
+        <a href="https://www.tuwien.at/en/">TU Wien</a> (Austria). I am
+        interested in all things related to computers from webservers over games
+        to simple scripts.
+      </p>
+      <p>
+        <a href="https://github.com/flofriday">GitHub</a>
+      </p>
 
-        <div style="width:100%; display: flex; margin: 24px;">
-            <img src="/flofriday.jpg" alt="" style="border-radius:50%; width:142px;">
-        </div>
-        <h1>I am flofriday</h1>
-        <p>
-            a computer-science student at
-            <a href="https://www.tuwien.at/en/">TU Wien</a> (Austria).
-            I am interested in all things related to computers from webservers
-            over games to simple scripts.
-        </p>
-        <p>
-            <a href="https://github.com/flofriday">GitHub</a>
-        </p>
-
-        <h2>Blog Posts</h2>
-        <ul>
-            {% for p in previews %}
-            <li>
-                <p>
-                    <i>
-                        {{p.date_str()}}
-                    </i>
-                    &nbsp;
-                    <strong>
-                        <a href="{{ p.url }}">{{p.title}}</a>
-                    </strong>
-                </p>
-            </li>
-            {% endfor %}
-        </ul>
+      <h2>Blog Posts</h2>
+      <ul>
+        {% for p in previews %}
+        <li>
+          <p>
+            <i>
+              {{ p.date_str() }}
+            </i>
+            &nbsp;
+            <strong>
+              <a href="{{ p.url }}">{{ p.title }}</a>
+            </strong>
+          </p>
+        </li>
+        {% endfor %}
+      </ul>
     </main>
-</body>
-
+  </body>
 </html>
