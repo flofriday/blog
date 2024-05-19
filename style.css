@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
 
 html {
@@ -9,10 +9,14 @@ body {
   font-family: "IBM Plex Sans", sans-serif;
 }
 
-pre {
+code {
   font-family: "JetBrains Mono", monospace;
   font-optical-sizing: auto;
   font-weight: 400;
+  font-size: 0.9rem;
+}
+
+pre {
   font-style: normal;
   font-size: 0.8rem;
 }
@@ -20,6 +24,9 @@ pre {
 pre code {
   border-radius: 0.6rem;
   border: 1px solid rgb(228, 228, 231);
+  padding: 0.6rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
 }
 
 blockquote {
@@ -27,7 +34,6 @@ blockquote {
   margin-left: 0px;
   margin-right: 0px;
   padding-left: 24px;
-  font-style: italic;
 }
 
 .content {
