@@ -40,8 +40,8 @@ def verify_setup(src: str, dst: str):
         os.mkdir(dst)
 
 
-def load_config(src: str) -> dict:
-    config_path = os.path.join(src, "config.toml")
+def load_config(args: dict[str, any]) -> dict:
+    config_path = os.path.join(args.source, "config.toml")
     if not os.path.isfile(config_path):
         print(f"🔥 Config '{config_path}' doesn't exist.")
         exit(1)
@@ -50,6 +50,8 @@ def load_config(src: str) -> dict:
     if "url" not in config:
         print(f"🔥 'url' key not found in '{config_path}'")
         exit(1)
+
+    config["show-draft"] = args.show_draft
 
     return config
 
@@ -108,7 +110,7 @@ class PostMetadata:
 def load_post_metadata(
     raw_metadata: dict[str, str], post: str, base_url: str
 ) -> PostMetadata:
-    meta = PostMetadata
+    meta = PostMetadata()
     meta.name = post
     other = {}
     for key, value in raw_metadata.items():
@@ -172,7 +174,7 @@ def compile_home(src: str, dst: str, config: dict):
         with open(os.path.join(src, "posts", post, "post.md")) as f:
             doc = MarkdownParser().parse(f.read())
         meta = load_post_metadata(doc.metadata, post, config["url"])
-        if meta.is_draft:
+        if meta.is_draft is True and not config["show-draft"]:
             continue
 
         # Map metadata to a post preview
@@ -239,6 +241,7 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
                 title=meta.title,
                 description=meta.description,
                 image=meta.image,
+                is_draft=meta.is_draft,
                 date=datetime.strftime(meta.date, DATE_FORMAT),
             )
         )
@@ -274,7 +277,7 @@ def build(args):
     verify_setup(args.source, args.out)
 
     # Load the config.toml file
-    config = load_config(args.source)
+    config = load_config(args)
 
     # Compile the homepage
     compile_home(args.source, args.out, config)
@@ -377,6 +380,11 @@ def main():
         action="store_true",
         help="Make a clean build (slow), however it will ensure that no old artifacts will leak.",
     )
+    build_parser.add_argument(
+        "--show-draft",
+        action="store_true",
+        help="Show drafts on the homepage.",
+    )
 
     server_parser = subparsers.add_parser(
         "serve",
@@ -392,6 +400,11 @@ def main():
         "--clean",
         action="store_true",
         help="Make a clean build (slow), however it will ensure that no old artifacts will leak.",
+    )
+    server_parser.add_argument(
+        "--show-draft",
+        action="store_true",
+        help="Show drafts on the homepage.",
     )
 
     new_parser = subparsers.add_parser("new", help="Create a new post.")
