@@ -140,7 +140,7 @@ print(html)
 ## Introducing meltdowns cousin: markberg
 
 I recorded myself during the first two hours of meltdowns development and 
-explained as a went along. At that point the 
+explained as I went along. At that point the 
 parser could parse bold, italics and headers and could convert it to html. 
 
 > **🦜 Chirpy the Parrot:** Where is the Youtube link?
@@ -155,9 +155,7 @@ compilers, I cannot recommend [Crafting Interpreters](https://craftinginterprete
 enough. 
 
 Anyway, those two videos were enough for Luis to get started on his own markdown 
-parser, which he lovingly called **markberg**. Since he started out with the 
-same base both parsers do have quite a few things in common however, markberg 
-surpassed meltdowns development quite quickly. 
+parser, which he lovingly called **markberg**. Since he started out with the same base, both parsers have quite a few things in common. However, Markberg surpassed Meltdown's development quite quickly.
 
 Currently all of [Luis's blog posts](https://lprod.dev/) (well at the time of writing there is only 
 one but I am sure more will come) are rendered with markberg. But what's more
@@ -175,10 +173,11 @@ needing to modify them, published meltdown on PyPI and converted my static site
 generator.
 
 Which means that the article you are reading right now was parsed and converted 
-to HTML by meltdown. I don't know if it will stay forever that way, it very 
-well might be that someday I will want to use a complex Markdown feature without
-messing around with my parser first and I will switch it out again, but for now 
-this seems like a fun side project.
+to HTML by meltdown. 
+I don't know if it will stay this way forever, it very well might be that 
+someday I'll want to use a complex Markdown feature without messing around with 
+my parser first, and I'll switch it out again. But for now, this seems like a 
+fun side project.
 
 You can find meltdown on [GitHub](https://github.com/flofriday/meltdown) and 
 [PyPI](https://pypi.org/project/meltdown/). It still doesn't handle all 
