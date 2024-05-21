@@ -2,7 +2,6 @@
 title: Meltdown: The story of a markdown parser
 date: 2024-05-21
 description: Building a markdown parser for fun.
-draft: true
 ---
 
 <!-- Start writing your markdown here ;) -->
