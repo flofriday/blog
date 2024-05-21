@@ -124,7 +124,7 @@ as text and go back (rewind) and parse the following content again, but now as r
 ```
 
 Other than this, meltdown was quite easy to implement. During the implementation I 
-quite often tried some edge-cases in other parsers like 
+often tried some edge-cases in other parsers like 
 [try.pandoc.org](https://try.pandoc.org) which really helped. Meltdown still 
 isn't the cleanest implementation but it has quite a few tests and a somewhat 
 simple API to use:
