@@ -67,7 +67,7 @@ this is especially hard when the competition is so strong with great hits like
 [parsedown](https://github.com/erusev/parsedown) and 
 [redcarpet](https://github.com/vmg/redcarpet). However, I quickly discovered 
 that **meltdown** doesn't have a prominent entry, which is just a wrong that 
-needs corrected. As a bonus the package name was also free on 
+needs to be corrected. As a bonus the package name was also free on 
 [PyPI](https://pypi.org/) and to be honest I just like the confidence it emits. 
 
 
