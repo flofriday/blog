@@ -16,7 +16,7 @@ python hellfire.py build .
 ```
 
 ```
-usage: hellfire.py [-h] {build,serve,new} ...
+usage: blog.py [-h] {build,serve,new} ...
 
 positional arguments:
   {build,serve,new}

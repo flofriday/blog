@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import html
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from typing import Self
+from typing import Optional, Self
 from meltdown import MarkdownParser, HtmlProducer
 from meltdown.Nodes import CodeBlockNode
 import os
@@ -57,12 +57,13 @@ def load_config(args: dict[str, any]) -> dict:
 
 
 # This functions checks if a file already exists and is up to date.
-def is_done(dst: str, *args: list[str]):
+# If any of the sources was updated the destination also needs to be updated
+def is_done(dst: str, *srcs: list[str]):
     if not os.path.exists(dst):
         return False
 
     dst_mtime = os.path.getmtime(dst)
-    for src in args:
+    for src in srcs:
         src_mtime = os.path.getmtime(src)
         if dst_mtime < src_mtime:
             return False
@@ -71,20 +72,28 @@ def is_done(dst: str, *args: list[str]):
 
 
 # Copies all files (shallow copy) from the src to the dst, excluding the
-# exceptions
-# Note: So when you do this once all static files will be copied. However, if
-# you now delete a file from the blog, it will be still in the destination
-# folder. So maybe we need to track these static files, or we just skillfully
-# ignore this problem.
-def copy_files(src: str, dst: str, exceptions: list[str] = None):
-    if exceptions is None:
-        exceptions = []
+# ignore list.
+# Also deletes files that are no longer used
+def copy_files(src: str, dst: str, ignore: Optional[list[str]] = None):
+    if ignore is None:
+        ignore = []
 
-    files = os.listdir(src)
-    files = filter(lambda f: os.path.isfile(os.path.join(src, f)), files)
-    files = filter(lambda f: f not in exceptions, files)
+    old_files = [f for f in os.listdir(dst) if os.path.isfile(os.path.join(dst, f))]
+    new_files = [
+        f
+        for f in os.listdir(src)
+        if f not in ignore and os.path.isfile(os.path.join(src, f))
+    ]
 
-    for file in files:
+    # Remove all deleted files
+    for dead_file in [
+        f for f in old_files if (f not in new_files and f != "index.html")
+    ]:
+        print("Remove: ", os.path.join(dst, dead_file))
+        os.remove(os.path.join(dst, dead_file))
+
+    # Copy all new files
+    for file in new_files:
         src_path = os.path.join(src, file)
         dst_path = os.path.join(dst, file)
 
@@ -195,13 +204,11 @@ def compile_home(src: str, dst: str, config: dict):
     with open(index_path, "w") as index:
         index.write(template.render(previews=previews))
 
-    # Also copy all files that are not templates into the root of the dst
-    # directory so that static images will be served and can be used in the
-    # templates
-    copy_files(src, dst, exceptions=["home.template", "post.template", "config.toml"])
+    # Also copy all static files that are not templates into the root of the dst
+    copy_files(os.path.join(src, "static"), dst)
 
 
-class HellfireHtmlProducer(HtmlProducer):
+class CustomHtmlProducer(HtmlProducer):
     def visit_code_block(self: Self, node: CodeBlockNode):
         self._output += "<pre"
         if node.language is not None:
@@ -221,7 +228,7 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
 
     if not os.path.isdir(html_dir):
         os.mkdir(html_dir)
-    copy_files(post_dir, html_dir, exceptions=["post.md"])
+    copy_files(post_dir, html_dir, ignore=["post.md"])
 
     # Skip html if already up to date (this is expensive)
     if is_done(html_path, post_path, template_path):
@@ -230,7 +237,7 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
     # Compile the markdown to html
     with open(post_path) as f:
         doc = MarkdownParser().parse(f.read())
-    html = HellfireHtmlProducer().produce(doc)
+    html = CustomHtmlProducer().produce(doc)
 
     # Write the complete document
     meta = load_post_metadata(doc.metadata, post, config["url"])
@@ -279,20 +286,26 @@ def build(args):
     # Load the config.toml file
     config = load_config(args)
 
-    # Compile the homepage
-    compile_home(args.source, args.out, config)
-
     # Compile all posts
     compile_posts(args.source, args.out, config)
 
+    # Compile the homepage
+    compile_home(args.source, args.out, config)
+
 
 def serve(args):
+    if args.clean:
+        # Fixme this traps the builder in an infinite loop of rebuilding
+        print("🔥 There is  currently a bug making serve with --clean impossible!")
+        exit(1)
+
     print("Building the webpage...\n")
     build(args)
     print(
         "\n"
+        "✅ Build completed\n"
         "🚀 Development server started on http://localhost:8000\n"
-        "WARNING: Do not use this in production!\n"
+        "WARNING: Do not use this in production! 🔥\n"
     )
 
     # Start the File Watcher
