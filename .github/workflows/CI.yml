@@ -9,18 +9,17 @@ jobs:
     if: ${{ github.ref_name == 'main' }}
     runs-on: ubuntu-latest
     steps:
-    - name: deploy on production server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        script_stop: true
-        script: |
-          cd blog
-          git pull
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python hellfire.py build --clean --out /home/blog/html
-
+      - name: deploy on production server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: |
+            cd blog
+            git pull
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python blog.py build --clean --out /home/blog/html
