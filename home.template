@@ -60,27 +60,22 @@
         a computer-science student at
         <a href="https://www.tuwien.at/en/">TU Wien</a> (Austria). I am
         interested in all things related to computers from webservers over games
-        to simple scripts.
       </p>
       <p>
         <a href="https://github.com/flofriday">GitHub</a>
       </p>
 
       <h2>Blog Posts</h2>
-      <ul>
-        {% for p in previews %}
-        <li>
-          <p style="display: flex">
-            <i style="flex: 0 0 130px">
-              {{ p.date_str() }}
-            </i>
-            <strong>
-              <a href="{{ p.url }}">{{ p.title }}</a>
-            </strong>
-          </p>
-        </li>
-        {% endfor %}
-      </ul>
+      {% for p in previews %}
+      <p style="display: flex">
+        <i style="flex: 0 0 130px">
+          {{ p.date_str() }}
+        </i>
+        <strong>
+          <a href="{{ p.url }}">{{ p.title }}</a>
+        </strong>
+      </p>
+      {% endfor %}
     </main>
   </body>
 </html>

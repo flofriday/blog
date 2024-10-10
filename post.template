@@ -7,6 +7,7 @@
     <title>{{ title }} | flofriday.dev</title>
     <!-- <link rel="alternate icon" href="/favicon.ico" type="image/x-icon" sizes="48x48" /> -->
 
+    <meta name="theme-color" content="#dff9e5" />
     <meta name="title" content="{{ title }}" />
     <meta name="author" content="flofriday" />
     <meta name="description" content="{{ description }}" />
@@ -59,7 +60,7 @@
       class="content"
       style="text-align: right; padding-top: 24px; padding-bottom: 12px"
     >
-      <i> - <a href="/" style="color: black"> flofriday </a></i>
+      <i> - <a href="/"> flofriday </a></i>
     </footer>
     <script>
       hljs.highlightAll();

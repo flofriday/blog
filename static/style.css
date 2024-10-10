@@ -8,6 +8,7 @@ html {
 body {
   font-family: "Rubik", sans-serif;
   font-weight: 400;
+  overflow-x: hidden;
 }
 
 strong,
@@ -19,6 +20,12 @@ h4,
 h5,
 h6 {
   font-weight: 500;
+}
+
+h1,
+h2 {
+  margin-top: 2rem;
+  margin-bottom: 0rem;
 }
 
 code {
@@ -75,7 +82,7 @@ header {
 }
 
 a {
-  color: #649b71;
+  color: #16802f;
 }
 
 /* Yeah I also wish I could distinquish them but no color really worked */
