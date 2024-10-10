@@ -35,14 +35,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   </head>
 
-  <body>
-    <main class="content">
-      <h1>{{ title }}</h1>
+  <body class="content">
+    <header>
+      <h1 class="title">{{ title }}</h1>
       <p style="width: 100%; display: flex; justify-content: space-between">
         <i>{{ date }}</i>
         <i>by <a href="/">flofriday</a></i>
       </p>
+    </header>
 
+    <main>
       {% if is_draft == True %}
       <div id="draft">
         <h3>This is a draft.</h3>

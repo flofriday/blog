@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
 
 html {
@@ -6,14 +6,28 @@ html {
 }
 
 body {
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+}
+
+strong,
+b,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
 }
 
 code {
   font-family: "JetBrains Mono", monospace;
   font-optical-sizing: auto;
   font-weight: 400;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  background-color: #dff9e57a;
+  border-radius: 0.2rem;
 }
 
 pre {
@@ -30,10 +44,27 @@ pre code {
 }
 
 blockquote {
-  border-left: 2px solid rgb(228, 228, 231);
+  border-left: 4px solid #dff9e5;
   margin-left: 0px;
   margin-right: 0px;
   padding-left: 24px;
+}
+
+header {
+  margin-bottom: 64px;
+}
+
+.title {
+  background-color: #dff9e5;
+  margin-left: -100%;
+  margin-right: -100%;
+  margin-top: -100%;
+  margin-bottom: 0;
+  padding-left: 100%;
+  padding-right: 100%;
+  padding-top: calc(100% + 4rem);
+  padding-bottom: calc(12px);
+  font-size: 2.5rem;
 }
 
 .content {
@@ -44,12 +75,13 @@ blockquote {
 }
 
 a {
-  color: rgb(50, 115, 220);
+  color: #649b71;
 }
 
-a:visited {
+/* Yeah I also wish I could distinquish them but no color really worked */
+/* a:visited {
   color: #8b6fcb;
-}
+} */
 
 img {
   max-width: 100%;

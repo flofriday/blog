@@ -70,11 +70,10 @@
       <ul>
         {% for p in previews %}
         <li>
-          <p>
-            <i>
+          <p style="display: flex">
+            <i style="flex: 0 0 130px">
               {{ p.date_str() }}
             </i>
-            &nbsp;
             <strong>
               <a href="{{ p.url }}">{{ p.title }}</a>
             </strong>
