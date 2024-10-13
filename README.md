@@ -33,11 +33,25 @@ options:
 This repository holds all all source code to build my blog and all contents of
 each blog.
 
-The generator currently is a sinlge script called `blog.py` and uses a custom
+The generator currently is a single script called `blog.py` and uses a custom
 Markdown parser.
 
-The each blog post is a directory in the `posts` directory. There all images,
-and text, or notes the post uses are bundled together.
+Each blog post is a directory in the `posts` directory. There all images,
+and text, or notes the post uses are bundled together. Subdirectories will 
+be ignored.
+
+In the frontmatter of a post the following fields are supported:
+- **date:** When the post was published `YYYY-MM-DD`
+- **title:** Used for the title and on the homepage
+- **description:** Only used for social media previews
+- **image:** Only used for social media previews
+- **draft:** Whether or not the post is finished (true/false)
+
+Drafts are unfinished posts, and therefore don't appear on the home page listing
+(unless `--show-draft` is enabled). However, draft's are always rendered and 
+deployed so that you can send the link to some friends for proof-reading.
+
+The rationale behind that is that the drafts are anyway public in this repo.
 
 ## Contribution
 
