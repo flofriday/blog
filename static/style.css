@@ -32,14 +32,14 @@ code {
   font-family: "JetBrains Mono", monospace;
   font-optical-sizing: auto;
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   background-color: #dff9e57a;
   border-radius: 0.2rem;
 }
 
 pre {
   font-style: normal;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 pre code {
@@ -114,6 +114,6 @@ img {
 #draft {
   border-radius: 0.6rem;
   border: 1px solid rgb(228, 228, 231);
-  background-color: #fff58b;
+  background-color: #fffdd1;
   padding: 12px;
 }

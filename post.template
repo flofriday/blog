@@ -52,7 +52,7 @@
     <main class="content">
       {% if is_draft == True %}
       <div id="draft">
-        <h3>This is a draft.</h3>
+        <h3>This is a draft 🔥</h3>
         The post isn't published yet and the final version might change.
       </div>
       {% endif %}

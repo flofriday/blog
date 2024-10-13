@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 
 ```bash
-python hellfire.py build .
+python blog.py build .
 ```
 
 ```
@@ -33,7 +33,7 @@ options:
 This repository holds all all source code to build my blog and all contents of
 each blog.
 
-The generator currently is a sinlge script called `hellfire` and uses a custom
+The generator currently is a sinlge script called `blog.py` and uses a custom
 Markdown parser.
 
 The each blog post is a directory in the `posts` directory. There all images,
