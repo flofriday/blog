@@ -8,7 +8,7 @@ html {
 body {
   font-family: "Rubik", sans-serif;
   font-weight: 400;
-  overflow-x: hidden;
+  margin: 0;
 }
 
 strong,
@@ -58,19 +58,21 @@ blockquote {
 }
 
 header {
-  margin-bottom: 64px;
+  margin-bottom: 4rem;
+}
+
+.hero {
+  background-color: #dff9e5;
 }
 
 .title {
-  background-color: #dff9e5;
-  margin-left: -100%;
-  margin-right: -100%;
-  margin-top: -100%;
-  margin-bottom: 0;
-  padding-left: 100%;
-  padding-right: 100%;
-  padding-top: calc(100% + 4rem);
-  padding-bottom: calc(12px);
+  padding-top: 4rem;
+  padding-bottom: 0.75rem;
+  box-sizing: border-box;
+  margin-top: 0;
+  padding-top: 4rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   font-size: 2.5rem;
 }
 
@@ -79,6 +81,10 @@ header {
   max-width: 740px;
   margin-left: auto;
   margin-right: auto;
+}
+
+footer {
+  margin-bottom: 2rem;
 }
 
 a {
@@ -95,6 +101,8 @@ img {
   max-height: 50vh;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: block;
 }
 
