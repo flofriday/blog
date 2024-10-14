@@ -4,6 +4,8 @@ My personal blog build with my custom static site generator.
 
 ## Usage
 
+To generate my blog you need Python 3.13.
+
 First you need to install all requirements with:
 ```bash
 python3 -m venv venv
