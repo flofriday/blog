@@ -1,6 +1,6 @@
 ---
 title: The simplest webservice I have in production
-date: 2024-10-13
+date: 2024-10-17
 description: How I wrote the simplest website I still host two years later.
 ---
 
