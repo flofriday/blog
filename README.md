@@ -4,17 +4,11 @@ My personal blog build with my custom static site generator.
 
 ## Usage
 
-To generate my blog you need Python 3.13.
+I use [uv](https://github.com/astral-sh/uv) to manage python and it's dependencies for my personal blog.
 
-First you need to install all requirements with:
+Once installed simply run :
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-```bash
-python blog.py build .
+uv run blog.py
 ```
 
 ```
@@ -39,7 +33,7 @@ The generator currently is a single script called `blog.py` and uses a custom
 Markdown parser.
 
 Each blog post is a directory in the `posts` directory. There all images,
-and text, or notes the post uses are bundled together. Subdirectories will 
+and text, or notes the post uses are bundled together. Subdirectories will
 be ignored.
 
 In the frontmatter of a post the following fields are supported:
@@ -50,7 +44,7 @@ In the frontmatter of a post the following fields are supported:
 - **draft:** Whether or not the post is finished (true/false)
 
 Drafts are unfinished posts, and therefore don't appear on the home page listing
-(unless `--show-draft` is enabled). However, draft's are always rendered and 
+(unless `--show-draft` is enabled). However, draft's are always rendered and
 deployed so that you can send the link to some friends for proof-reading.
 
 The rationale behind that is that the drafts are anyway public in this repo.

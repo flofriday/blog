@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import html
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from textwrap import dedent
 from typing import Optional, Self
 from meltdown import MarkdownParser, HtmlProducer
 from meltdown.Nodes import CodeBlockNode
@@ -73,7 +74,7 @@ def is_done(dst: str, *srcs: list[str]):
 
 # Copies all files (shallow copy) from the src to the dst, excluding the
 # ignore list.
-# Also deletes files that are no longer used
+# Also deletes files that are no longer used.
 def copy_files(src: str, dst: str, ignore: Optional[list[str]] = None):
     if ignore is None:
         ignore = []
@@ -359,21 +360,31 @@ def new_post(args):
 
     # Create the directory
     dir_path = os.path.join(args.source, "posts", title_path)
-    os.mkdir(dir_path)
+    try:
+        os.mkdir(dir_path)
+    except FileExistsError as e:
+        print(f'🔥 Folder with the name "{e.filename}" already exists.')
+        exit(1)
 
     with open(os.path.join(dir_path, "post.md"), "w") as f:
-        f.write(
-            f"""
----
-title: {title}
-date: {date}
-image: some_image_for_social_preview.png
-description: This is just a new post.
-draft: true
----
 
-<!-- Start writing your markdown here ;) -->
-""".strip()
+        def strip_dedent(s: str):
+            return dedent(s).strip()
+
+        f.write(
+            strip_dedent(
+                f"""
+                ---
+                title: {title}
+                date: {date}
+                image: some_image_for_social_preview.png
+                description: This is just a new post.
+                draft: true
+                ---
+
+                <!-- Start writing your markdown here ;) -->
+                """
+            )
         )
 
 
