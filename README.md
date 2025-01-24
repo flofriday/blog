@@ -6,10 +6,11 @@ My personal blog build with my custom static site generator.
 
 I use [uv](https://github.com/astral-sh/uv) to manage python and it's dependencies for my personal blog.
 
-Once installed simply run :
+Once installed simply run:
 ```bash
 uv run blog.py
 ```
+
 
 ```
 usage: blog.py [-h] {build,serve,new} ...
