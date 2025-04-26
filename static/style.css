@@ -7,8 +7,15 @@ html {
 
 body {
   font-family: "Rubik", sans-serif;
-  font-weight: 400;
   margin: 0;
+}
+
+main {
+  line-height: 31px;
+}
+
+p {
+  margin: 18px 0;
 }
 
 strong,
@@ -62,7 +69,7 @@ header {
 }
 
 .hero {
-  background-color: #dff9e5;
+  /* background-color: #dff9e5; */
 }
 
 .title {
@@ -88,7 +95,8 @@ footer {
 }
 
 a {
-  color: #16802f;
+  /* color: #16802f; */
+  color: rgb(5, 160, 109);
 }
 
 /* Yeah I also wish I could distinquish them but no color really worked */
