@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import html
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from io import BytesIO
 from textwrap import dedent
 from typing import Optional, Self
 from meltdown import MarkdownParser, HtmlProducer
@@ -296,7 +297,7 @@ def build(args):
 
 def serve(args):
     if args.clean:
-        # Fixme this traps the builder in an infinite loop of rebuilding
+        # FIXME: this traps the builder in an infinite loop of rebuilding
         print("🔥 There is  currently a bug making serve with --clean impossible!")
         exit(1)
 
@@ -338,6 +339,56 @@ def serve(args):
             self.send_header("Pragma", "no-cache")
             self.send_header("Expires", "0")
             return super().end_headers()
+
+            
+        def do_GET(self):
+            """Serve a GET request."""
+            if not self.path.endswith("/"):
+                return super().do_GET()
+
+            f = self.send_head()
+            if f:
+                try:
+                    injection = """
+                    <script>
+                    let lastContent = document.documentElement.outerHTML;
+
+                    async function checkForUpdates() {
+                        try {
+                            const response = await fetch(window.location.href, {
+                                cache: 'no-cache'
+                            });
+                            const newContent = await response.text();
+                            
+                            if (newContent !== lastContent) {
+                                // Parse the new content
+                                const parser = new DOMParser();
+                                const newDoc = parser.parseFromString(newContent, 'text/html');
+                                
+                                // Replace the entire document content except for our script
+                                document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
+                                
+                                lastContent = newContent;
+                            }
+                        } catch (error) {
+                            console.error('Failed to check for updates:', error);
+                        }
+                    }
+
+                    // Check for updates every second
+                    setInterval(checkForUpdates, 1000);
+                    </script>
+                    """
+
+                    text: str = f.read().decode()
+                    text = text.replace("</body>", injection + "</body>")
+                    patched = BytesIO(text.encode())
+                    self.copyfile(patched, self.wfile)
+                finally:
+                    f.close()
+
+
+
 
     server_address = ("localhost", 8000)
     httpd = HTTPServer(server_address, RequestHandler)
