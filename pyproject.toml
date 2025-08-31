@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "jinja2>=3.1.6",
-    "meltdown>=0.0.4",
+    "meltdown>=0.0.6",
     "toml>=0.10.2",
     "watchdog>=6.0.0",
 ]
