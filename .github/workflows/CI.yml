@@ -40,5 +40,6 @@ jobs:
           script_stop: true
           script: |
             cd blog
-            git pull
+            git fetch --all
+            git reset --hard origin/main
             /home/blog/.local/bin/uv run blog.py build --clean --out /home/blog/html
