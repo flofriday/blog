@@ -369,6 +369,7 @@ def serve(args):
                                 document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
                                 
                                 lastContent = newContent;
+                                hljs.highlightAll();
                             }
                         } catch (error) {
                             console.error('Failed to check for updates:', error);
