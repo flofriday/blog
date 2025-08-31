@@ -333,6 +333,16 @@ def serve(args):
     class RequestHandler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs, directory=serve_folder)
+        
+        def _should_inject(self):
+           return self.path.endswith("/")
+
+
+        def send_header(self, keyword, value):
+            if self._should_inject() and keyword=="Content-Length":
+                return
+
+            return super().send_header(keyword, value)
 
         def end_headers(self) -> None:
             self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
@@ -342,15 +352,15 @@ def serve(args):
 
         def do_GET(self):
             """Serve a GET request."""
-            if not self.path.endswith("/"):
+            if not self._should_inject():
                 return super().do_GET()
 
             f = self.send_head()
             if f:
                 try:
-                    injection = """
+                    injection = dedent("""
                     <script>
-                    let lastContent = document.documentElement.outerHTML;
+                    let lastContent = null;
 
                     async function checkForUpdates() {
                         try {
@@ -358,15 +368,13 @@ def serve(args):
                                 cache: 'no-cache'
                             });
                             const newContent = await response.text();
+                            if (lastContent === null) {
+                                lastContent = newContent
+                                return
+                            }
                             
                             if (newContent !== lastContent) {
-                                // Parse the new content
-                                const parser = new DOMParser();
-                                const newDoc = parser.parseFromString(newContent, 'text/html');
-                                
-                                // Replace the entire document content except for our script
-                                document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
-                                
+                                document.documentElement.innerHTML = newContent;
                                 lastContent = newContent;
                                 hljs.highlightAll();
                             }
@@ -378,7 +386,7 @@ def serve(args):
                     // Check for updates every second
                     setInterval(checkForUpdates, 1000);
                     </script>
-                    """
+                    """)
 
                     text: str = f.read().decode()
                     text = text.replace("</body>", injection + "</body>")
@@ -461,7 +469,7 @@ def main():
 
     server_parser = subparsers.add_parser(
         "serve",
-        help="A development server that, watches the input folder, rebuilds it and serves it on localhost:8000",
+        help="A development server that, watches the input folder, rebuilds it and serves with it hot-code-reloading.",
     )
     server_parser.add_argument(
         "source", default=".", nargs="?", help="The source directory of the blog."

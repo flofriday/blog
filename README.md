@@ -18,7 +18,7 @@ usage: blog.py [-h] {build,serve,new} ...
 positional arguments:
   {build,serve,new}
     build            Build the website.
-    serve            A development server that, watches the input folder, rebuilds it and serves it on localhost:8000
+    serve            A development server that, watches the input folder, rebuilds it and serves with it hot-code-reloading.
     new              Create a new post.
 
 options:
@@ -28,10 +28,10 @@ options:
 ## Structure
 
 This repository holds all all source code to build my blog and all contents of
-each blog.
+each blog post.
 
-The generator currently is a single script called `blog.py` and uses a custom
-Markdown parser.
+The generator currently is a single script called `blog.py` and uses my custom
+[Markdown parser](https://pypi.org/project/meltdown/).
 
 Each blog post is a directory in the `posts` directory. There all images,
 and text, or notes the post uses are bundled together. Subdirectories will
