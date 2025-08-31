@@ -340,7 +340,6 @@ def serve(args):
             self.send_header("Expires", "0")
             return super().end_headers()
 
-            
         def do_GET(self):
             """Serve a GET request."""
             if not self.path.endswith("/"):
@@ -387,9 +386,6 @@ def serve(args):
                     self.copyfile(patched, self.wfile)
                 finally:
                     f.close()
-
-
-
 
     server_address = ("localhost", 8000)
     httpd = HTTPServer(server_address, RequestHandler)
