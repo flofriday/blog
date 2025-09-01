@@ -349,6 +349,10 @@ def serve(args):
             return self.path.endswith("/")
 
         def send_header(self, keyword, value):
+            # Don't write content length header for injected documents since we
+            # don't want to recalculate the size of the injection and the
+            # default server would set the size without the injection which will
+            # break Chrome and Safari.
             if self._should_inject() and keyword == "Content-Length":
                 return
 
@@ -370,22 +374,27 @@ def serve(args):
                 try:
                     injection = dedent("""
                     <script>
-                    let lastContent = null;
+                    let lastContentDate = null;
 
                     async function checkForUpdates() {
                         try {
                             const response = await fetch(window.location.href, {
+                                method: "HEAD",
                                 cache: 'no-cache'
                             });
-                            const newContent = await response.text();
-                            if (lastContent === null) {
-                                lastContent = newContent
+                            const newContentDate = await response.headers.get("last-modified");
+                            if (lastContentDate === null) {
+                                lastContentDate = newContentDate
                                 return
                             }
-
-                            if (newContent !== lastContent) {
-                                document.documentElement.innerHTML = newContent;
-                                lastContent = newContent;
+                            
+                            console.log(lastContentDate, newContentDate)
+                            if (newContentDate !== lastContentDate) {
+                                const response = await fetch(window.location.href, {
+                                    cache: 'no-cache'
+                                });
+                                document.documentElement.innerHTML = await response.text();
+                                lastContentDate = newContentDate;
                                 hljs.highlightAll();
                             }
                         } catch (error) {
@@ -393,8 +402,7 @@ def serve(args):
                         }
                     }
 
-                    // Check for updates every second
-                    setInterval(checkForUpdates, 1000);
+                    setInterval(checkForUpdates, 250);
                     </script>
                     """)
 
