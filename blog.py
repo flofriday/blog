@@ -333,13 +333,12 @@ def serve(args):
     class RequestHandler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs, directory=serve_folder)
-        
-        def _should_inject(self):
-           return self.path.endswith("/")
 
+        def _should_inject(self):
+            return self.path.endswith("/")
 
         def send_header(self, keyword, value):
-            if self._should_inject() and keyword=="Content-Length":
+            if self._should_inject() and keyword == "Content-Length":
                 return
 
             return super().send_header(keyword, value)
