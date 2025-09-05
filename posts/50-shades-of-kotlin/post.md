@@ -12,15 +12,15 @@ So I pasted the code, Kotlin target already preselected from a long forgotten pa
 
 That's weird, the code is correct, the compiler ran, I see the bytecode that confirms that inlining takes place which will be a cause for many future headaches but at this point I don't care about that anymore. Why doesn't Godbolt correctly highlight `3uL`.
 
-Well at least there is still the trusty [Kotlin Playground](https://play.kotlinlang.org/), let's paste it in there and voilá – _WHAT?_ Even that doesn't highlight the suffix?
+Well at least there is still the trusty [Kotlin Playground](https://play.kotlinlang.org/), let's paste it in there and voilà – _WHAT?_ Even that doesn't highlight the suffix?
 
 Ok back to [IntelliJ IDEA](https://www.jetbrains.com/idea/), I **need** to see at least one colored number literal, and luckily the most common IDE for Kotlin does do it right.
 
 ## What's going on here?
 
-It's safe to assume that Compiler Explorer with such a wide array of supported languages and a huge pile of other difficult problems to solve (like [92 million yearly compilations](https://xania.org/202506/how-compiler-explorer-works)) doesn't maintain it's own language parsing and code editing framework. So let's grab our trenchcoat and magifier glass and cosplay as the world's most famous detective.
+It's safe to assume that Compiler Explorer with such a wide array of supported languages and a huge pile of other difficult problems to solve (like [92 million yearly compilations](https://xania.org/202506/how-compiler-explorer-works)) doesn't maintain it's own language parsing and code editing framework. So let's grab our trenchcoat and magnifier glass and cosplay as the world's most famous detective.
 
-_Right click -> Inspect -> Scroll -> Click -> Scroll_ ... and there we have the corprate, [*Manaco - The Editor of the Web*](https://microsoft.github.io/monaco-editor/).
+_Right click -> Inspect -> Scroll -> Click -> Scroll_ ... and there we have the corporate, [*Manaco - The Editor of the Web*](https://microsoft.github.io/monaco-editor/).
 A quick google search later and on the Monaco Playground we can verify that indeed the bug seems to originate from here.
 
 Glancing over the [ReadMe](https://github.com/microsoft/monaco-editor?tab=readme-ov-file#faq) we find the following interesting section:
@@ -29,7 +29,7 @@ Glancing over the [ReadMe](https://github.com/microsoft/monaco-editor?tab=readme
 
 _Wait_ does that mean, that the bug actually originates from VS Code?
 
-Well, no. While the Monaco Core does call the VSCode repo it's home, it doesn't contain the highlighting code, so the bug is isolated to Monaco. This also means that while Monaco is able to highlight Kotlin, vanilla VSCode without plugins isn't.
+Well ... no. While the Monaco Core does call the VSCode repo it's home, it doesn't contain the highlighting code, so the bug is isolated to Monaco. This also means that while Monaco is able to highlight Kotlin, vanilla VSCode without plugins isn't.
 
 Going though a similar investigation sprint for Kotlin Playground we find that
 here too, they depend on an open source solution, but in this case it's [*CodeMirror*](https://codemirror.net/).
@@ -202,32 +202,37 @@ So finally we end up with a short list of completed PRs – that I promise to ke
 - [Monaco](https://github.com/microsoft/monaco-editor/pull/4973)
 - [CodeMirror](https://github.com/codemirror/legacy-modes/pull/23)
 - [highlight.js](https://github.com/highlightjs/highlight.js/pull/4307)
+- [Pygments](https://github.com/pygments/pygments/pull/2961)
 - _prism.js_
-- _pygments_
 - _treesiter_
 - _shiki_
 - _sublime text_
 - _bat_
 
-> **🦜 Chirpy the Parrot:** So what did they got wrong about Kotlin's number parsign?
+> **🦜 Chirpy the Parrot:** So what did they get wrong about Kotlin's number parsing?
 
 Well, since Kotlin (especially in the beginning) was so closely related to Java, many projects either reused that parser directly or were heavily insipired by it. Quite often this lead to them accepting invalid code like the `d` and `D` suffixes.
 
 Some syntax was only later introduced, like the `u` and `U` suffixes for unsinged numbers in Kotlin 1.5 and with some of the highlighters supporting about 200 languages changes like that can simply slip under the radar.
 
-
 And sometimes your educated guesses can be wrong. All prefixes and suffixes are case independent except for the long suffix `L` where only the uppercase is valid.
 
-A notable mention in all of this is [Rouge](https://rouge.jneen.net/) a highlighting library for Ruby that did handle everything I threw at it and has an implementation that is remarkably close to the official Kotlin grammar.
+Also parsing is hard, having implemented a couple of fixes, the same regex might work for one highlighter but fail in another as they use a different regex-engine that either has less features or is to greedy and doesn't backtrack far enough.
+
+> **🦜 Chirpy the Parrot:** What we really needed is a new standard language grammars to rule them all, so that every language has only one implementation, one source of truth.
+
+Yes in theory that would been awesome, but there are good reason for wanting a custom implementation. For example editors need to deal with broken inputs (while the developer is typing) while some other highlighters of static content might decide against it so that the user doesn't even need to copy the code from Stackoverflow into their IDE as it is visibly broken.  
+
+However, there are a _some_ quasi standards, many highlighters reuse TextMate grammars or TreeSitter grammars. One library for Go, [chroma](https://github.com/alecthomas/chroma) parses the Python soucecode of [Pygments](https://pygments.org/) to generate it's own (admitedly similar) grammar files.
+
+
+A notable mention in all of this, however is [Rouge](https://rouge.jneen.net/) a highlighting that did handle everything I threw at it and has an implementation that is remarkably close to the official Kotlin grammar.
 
 ## Remarks
 
 While this post mostly highlights issues (pun intended) in open source libraries it's not my intention to blame anyone here. Many of them do support a huge amount of languages and keeping up with syntax changes is impossible for what if often just a side project of a single person.
 
 Instead, I want to thank you, for making it so much easier communicate about code (especially for those of us with dyslexia).
-
-<!-- I know this whole post could be negativly iterpreted as _open source sucks_ because I only highlighted (pun intended) issues in various different implementations.
- -->
 
 I want to take this space of unused internet realestate to thank my friends for the alternative titles they suggested. They made me laugh pretty hard so you might enjoy them too:
 
