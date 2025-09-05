@@ -5,6 +5,7 @@ import html
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from io import BytesIO
 from textwrap import dedent
+import time
 from typing import Optional, Self
 from meltdown import MarkdownParser, HtmlProducer
 from meltdown.Nodes import CodeBlockNode
@@ -163,6 +164,8 @@ def load_post_metadata(
 
 
 def compile_home(src: str, dst: str, config: dict):
+    start_time = time.perf_counter()
+
     @dataclass
     class PostPreview:
         title: str
@@ -208,6 +211,7 @@ def compile_home(src: str, dst: str, config: dict):
 
     # Also copy all static files that are not templates into the root of the dst
     copy_files(os.path.join(src, "static"), dst)
+    print(f"\tBuilt home in {(time.perf_counter() - start_time) * 1000:.0f}ms")
 
 
 class CustomHtmlProducer(HtmlProducer):
@@ -221,6 +225,8 @@ class CustomHtmlProducer(HtmlProducer):
 
 
 def compile_post(post: str, template: Template, src: str, dst: str, config: dict):
+    start_time = time.perf_counter()
+
     # Also copy all files from the dir to dst
     post_dir = os.path.join(src, "posts", post)
     html_dir = os.path.join(dst, "posts", post)
@@ -233,7 +239,9 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
     copy_files(post_dir, html_dir, ignore=["post.md"])
 
     # Skip html if already up to date (this is expensive)
+    name = post_path.split('/')[-2]
     if is_done(html_path, post_path, template_path):
+        print(f"\tBuilt {name} (cached) in {(time.perf_counter() - start_time)*1000:.0f}ms")
         return
 
     # Compile the markdown to html
@@ -254,6 +262,8 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
                 date=datetime.strftime(meta.date, DATE_FORMAT),
             )
         )
+
+    print(f"\tBuilt {name} in {(time.perf_counter() - start_time)*1000:.0f}ms")
 
 
 def compile_posts(src: str, dst: str, config: dict):
@@ -278,6 +288,9 @@ def compile_posts(src: str, dst: str, config: dict):
 
 
 def build(args):
+    start_time = time.perf_counter()
+    print("Building Webpage:")
+
     # Delete everything in a clean build
     if args.clean and os.path.exists(args.out):
         shutil.rmtree(args.out)
@@ -294,6 +307,8 @@ def build(args):
     # Compile the homepage
     compile_home(args.source, args.out, config)
 
+    print(f"Build complete in {(time.perf_counter() - start_time) * 1000:.0f}ms ✨")
+
 
 def serve(args):
     if args.clean:
@@ -301,11 +316,9 @@ def serve(args):
         print("🔥 There is  currently a bug making serve with --clean impossible!")
         exit(1)
 
-    print("Building the webpage...\n")
     build(args)
     print(
         "\n"
-        "✅ Build completed\n"
         "🚀 Development server started on http://localhost:8000\n"
         "WARNING: Do not use this in production! 🔥\n"
     )
@@ -319,9 +332,7 @@ def serve(args):
             if os.path.abspath(event.src_path).startswith(os.path.abspath(args.out)):
                 return
 
-            print("Building the webpage...")
             build(args)
-            print("Completed build\n")
 
     observer = Observer()
     observer.schedule(BuildHandler(), path=args.source, recursive=True)
@@ -371,7 +382,7 @@ def serve(args):
                                 lastContent = newContent
                                 return
                             }
-                            
+
                             if (newContent !== lastContent) {
                                 document.documentElement.innerHTML = newContent;
                                 lastContent = newContent;
