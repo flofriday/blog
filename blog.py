@@ -239,9 +239,11 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
     copy_files(post_dir, html_dir, ignore=["post.md"])
 
     # Skip html if already up to date (this is expensive)
-    name = post_path.split('/')[-2]
+    name = post_path.split("/")[-2]
     if is_done(html_path, post_path, template_path):
-        print(f"\tBuilt {name} (cached) in {(time.perf_counter() - start_time)*1000:.0f}ms")
+        print(
+            f"\tBuilt {name} (cached) in {(time.perf_counter() - start_time) * 1000:.0f}ms"
+        )
         return
 
     # Compile the markdown to html
@@ -263,7 +265,7 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
             )
         )
 
-    print(f"\tBuilt {name} in {(time.perf_counter() - start_time)*1000:.0f}ms")
+    print(f"\tBuilt {name} in {(time.perf_counter() - start_time) * 1000:.0f}ms")
 
 
 def compile_posts(src: str, dst: str, config: dict):

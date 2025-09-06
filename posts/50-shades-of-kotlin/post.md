@@ -10,7 +10,7 @@ Recently I was investigating some bug in my branch of the Kotlin compiler and su
 
 So I pasted the code, Kotlin target already preselected from a long forgotten past experiment and – *Huh*, Compiler Explorer doesn't correctly highlight my code.
 
-That's weird, the code is correct, the compiler ran, I see the bytecode that confirms that inlining takes place which will be a cause for many future headaches but at this point I don't care about that anymore. Why doesn't Godbolt correctly highlight `3uL`.
+That's weird, the code is correct, the compiler ran, I see the bytecode that confirms that inlining takes place which will be a cause for many future headaches but I already don't care about that anymore. Why doesn't Godbolt correctly highlight `3uL`?
 
 Well at least there is still the trusty [Kotlin Playground](https://play.kotlinlang.org/), let's paste it in there and voilà – _WHAT?_ Even that doesn't highlight the suffix?
 
@@ -20,7 +20,7 @@ Ok back to [IntelliJ IDEA](https://www.jetbrains.com/idea/), I **need** to see a
 
 It's safe to assume that Compiler Explorer with such a wide array of supported languages and a huge pile of other difficult problems to solve (like [92 million yearly compilations](https://xania.org/202506/how-compiler-explorer-works)) doesn't maintain it's own language parsing and code editing framework. So let's grab our trenchcoat and magnifier glass and cosplay as the world's most famous detective.
 
-_Right click -> Inspect -> Scroll -> Click -> Scroll_ ... and there we have the corporate, [*Manaco - The Editor of the Web*](https://microsoft.github.io/monaco-editor/).
+_Right click -> Inspect -> Scroll -> Click -> Scroll_ ... and there we have the culprit, [*Manaco - The Editor of the Web*](https://microsoft.github.io/monaco-editor/).
 A quick google search later and on the Monaco Playground we can verify that indeed the bug seems to originate from here.
 
 Glancing over the [ReadMe](https://github.com/microsoft/monaco-editor?tab=readme-ov-file#faq) we find the following interesting section:
@@ -73,7 +73,7 @@ val e = 123UL       // Unsigned Long
 val fixned = 123l   // Error: Use 'L' instead of 'l'.
 ```
 
-> **🦜 Chirpy the Parrot:** This code doesn't look quite right. Why is it so colorless?
+> **🦜 Chirpy the Parrot:** This code doesn't look quite right. Why is it so ... _colorless_?
 
 Well well well, guess who relied on an open-source solution for his blog's code highlighting?
 
@@ -83,6 +83,7 @@ Since Kotlin 1.1 you can also use underscores inside nunbers to seperate them (b
 val million = 1_000_000
 val red = 0xFF_00_00
 val twoBytes = 0b01100101_11010101
+val longSpace = 1__3
 ```
 
 It's also important to mention that leading zero's aren't allowed for decimal
@@ -102,7 +103,7 @@ val twoZeros = 00
 val may = 05
 ```
 
-We're almost done but it is important to mention that floating points can also directly start with a dot or can contain the _E Noation_.
+We're almost done, but floating points can also directly start with a dot or can contain the _E Noation_.
 
 ```kotlin
 val x = .123
@@ -125,11 +126,11 @@ Or if for some sick reason you prefer a massive regex:
 
 _Yikes!_
 
-You can say a lot good things about Regex but it won't win any prices for readability. Luckily, I wrote that one by hand for _Other Reasons™_ (aka. foreshadowing) so stick with the grammar if you need to be sure.
+You can say a lot good things about Regex but it won't win any prices for readability. Luckily, I wrote that one for _Other Reasons™_ (aka. foreshadowing) so stick with the grammar if you need to be sure.
 
 ## Bad highlighting all the way down
 
-Ok so we investigated two out of two open source soultions and they get Kotlin's
+Ok so we investigated two out of two open source solutions and they get Kotlin's
 number literals wrong. That seems pretty unlikely, what are the odds of that?
 
 So from the rules above I patched together a simple file with a handful of test cases and pasted it into any highlighting library I could get my hands on. Which in the end allowed me to produce this little gallery of bad highlights.
