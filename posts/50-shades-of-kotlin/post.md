@@ -135,7 +135,7 @@ number literals wrong. That seems pretty unlikely. _What are the odds of that?_
 
 So far I stumbled across the higlighting problem by accident, but to see if it's a broader problem it would be much easier to to have an test file we can past into each. Obviously, I could also always dig into the codebase and compare that to the mental model I have in my head, but having an exhaustive test-set to copy and paste isn't just less error-prone but also much quicker to validate. So I took the original grammar from the spec and instead of using it to create a parser I wrote a [generator for valid literals](https://gist.github.com/flofriday/1ff27a1324a3fa92c5a614e46b43dd37).
 
-After manifesting some utility functions into existance, the generator code ended up looking remarkibly similar to the EBNF grammar it implemented, making it easy to verify for correctness. As a side note I'm a big fan of copying the spec into sourcecode.
+After manifesting some utility functions into existence, the generator code ended up looking remarkably similar to the EBNF grammar it implemented, making it easy to verify for correctness. As a side note I'm a big fan of copying the spec into sourcecode.
 
 ```kotlin
 /**
@@ -156,13 +156,18 @@ fun doubleLiteral(): List<String> =
 
 With my cute 3k lines of testcases (I might have overdone it just a little) it was quite easy to quickly get a rough overview _if_ and _where_ the issues in a highlighter might be.
 
-As a next reasonable step I went on a fever dream like rampage pasting that snippet into any code editor and highlighter library demo page I could think of. 
+As a next reasonable step I went on a fever-dream like rampage pasting that snippet into any code editor and highlighter library demo page I could think of. 
 
-Actually, this reminds me of another point, if you ever find yourself mainting a highlighter 1) good luck with rejecting a never-ending stream of unsoliceted PRs for languages with a single digit userbase, even when represented in binary format and 2) please let me try your library in the browser. With the current state of WASM and basically free hosting with GitHub pages there is almost no excuses not to. I know that it might be impractically slow and the bundle might be too large for production-use but when I'm _shopping_ for a highlighter my first priority is it's quality and an interactive demo lets me figure that out so much faster.
+Actually, this reminds me of another point, if you ever find yourself maintaining a highlighter 1) Congratulation 2) good luck with rejecting a never-ending stream of unsolicited PRs for languages with a single digit userbase, even when represented in binary format and 3) please let me try your library in the browser. With the current state of WASM and basically free hosting with GitHub pages there is almost no excuses not to. I know that it might be impractically slow and the bundle might be too large for production-use but when I'm _shopping_ for a highlighter my first priority is it's quality and an interactive demo lets me figure that out so much faster.
 
-After the initial high of pasting that code into everything I walked away with two realizations. First, while there are a lot of editors, libraries etc that do highlighting, there aren't 
+After the initial high of pasting that code into everything I walked away with two realizations. First, almost everyone has problems. And second, while there are a lot of editors, libraries, tools and websites that do highlighting, there aren't _that_ many sources that reimplement a parser for Kotlin.
 
-From there it was mostly a task of grepping through the codebase for any mention of Kotlin finding the code responsible and adjusting it as needed.
+The more obvious examples are Discord or StackOverflow that both rely on a library to do the highlighting (in that case highlight.js). But then there are some libraries that ingest a textmate grammar or treesitter grammar. Or one golang library that has a tool that can parse python code from pygments (another library) to generate grammar definition in a custom XML file format (kinda crazy but I love it).
+
+So to get a overview how all of this relates to each other I crafted that following graph of popular libraries and some of my favorite tools:
+
+![Graph](graph.png)
+(_Temporary image, final one will be with icons and co_)
 
 <!-- So from the rules above I patched together a simple file with a handful of test cases and pasted it into any highlighting library I could get my hands on. Which in the end allowed me to produce this little gallery of bad highlights.
  -->
@@ -182,39 +187,15 @@ From there it was mostly a task of grepping through the codebase for any mention
 
 ## All numbers have the literal right to be highlighted
 
-> **🦜 Chirpy the Parrot:** Buhu, all the free open source software that you use on a daily basis has a minor bug. So what ya gonnna do about it?
+_Maybe start with a note why highlighting is even important? A first line of defesnse against wrong code?_
 
-I guess it's time to get our hands dirty and contribute back.
+> **🦜 Chirpy the Parrot:** So you found a minor systemic bug nobody really cares about, what ya gonnna do about it?
 
-<!--
-As a good open-source loving person that used most many of the libraries mentioned above (directly or indirectly) there is really only thing to do: **Fixing the problem**.
--->
-<!-- 
-Till now I used to play around to with each highlighter until I find a problem, but if we are going to fix them it would be really useful to have a test-set. Obviously, I could also always dig into the codebase and compare that to the mental model I have in my head, but having an exhaustive test-set to copy and paste isn't just less error-prone but also much quicker to validate. So I took the original grammar from the spec and instead of using it to create a parser I wrote a [generator for valid literals](https://gist.github.com/flofriday/1ff27a1324a3fa92c5a614e46b43dd37).
+I guess it's time to get our hands dirty and write some code.
 
-With a few utility functions that map closely to EBNF grammar the Kotlin code looked remarkably similar to the the grammar, making it easy to verify the correctness.
+While we already have a regex that we can apply for correct lexing and most highlighters use regex for this part, it isn't as easy as just pasting that in an opening a PR. To help out the maintainers reviewing the changes it makes much more sense to see what's already there and if only a single edge-case is missing we'll try to be the good surgon we always knew we could be and only do least invasive procedure necessary.
 
-```kotlin
-/**
- * Grammar:
- * [DecDigits] '.' DecDigits [DoubleExponent]
- * | DecDigits DoubleExponent
- */
-fun doubleLiteral(): List<String> =
-    either(
-        optional(decDigits())
-            .add(".")
-            .add(decDigits())
-            .optional(doubleExponent()),
-        decDigits().add(doubleExponent())
-    )
-```
-
-With my cute 3k lines of testcases (I might have overdone it just a little) it was quite easy to quickly get a rough overview _if_ and _where_ the issues in a highlighter might be. From there it was mostly a task of grepping through the codebase for any mention of Kotlin finding the code responsible and adjusting it as needed -->
-
-While I already had a complete regex for a correct parsing and most libraries do use regex for lexing (which is a totally valid for lexing) I didn't just paste it in there. Some project had only a quite simplistic approach and there it made sense to replace the little they had with a more sophisticated one, but others did only lack some corner cases so there I tried the least invasive approach and only made changesonly changes where it was necessary.
-
-The regular grammar I showed mentioned last chapter is correct but, there are some valid reasons why you want to accept false-positives on purpose. This especially applies to editors where you might want to allow incomplete literals so that when the user types it is already highlighted as it might _feel_ laggy when the editor only caughs up once you are done typing.
+And then there are the cases where don't want to be _correct_ on purpose. This especially applies to editors where you might want to allow incomplete literals so when the user types it is already highlighted as it might _feel_ slow when the editor only catches up once you are done typing.
 
 ```kotlin
 // Correct literals
@@ -222,14 +203,14 @@ val full = 1_2
 val octal = 0xf
 
 // Incomplete literals,
-// but we might already highlight it while they are typing
+// but we might already want to highlight them
 val partial = 1_
 val partialOct = 0x
 ```
 
-For such behaivor I decided on a case by case basis what the current status qou was in for each project.
+For such behaivor I decided on a case by case basis what the current status qou was in each project.
 
-So finally we end up with a short list of completed PRs – that I promise to keep updating but eventually will propperly forget – and a longer backlog for eventual _nerd-sniping_:
+Finally we end up with a short list of completed PRs – that I'll now promise to keep updating but more likely will eventually forget – and a longer backlog for eventual _nerd-sniping_:
 
 - [Monaco](https://github.com/microsoft/monaco-editor/pull/4973)
 - [CodeMirror](https://github.com/codemirror/legacy-modes/pull/23)
@@ -247,24 +228,13 @@ Well, since Kotlin (especially in the beginning) was so closely related to Java,
 
 Some syntax was only later introduced, like the `u` and `U` suffixes for unsinged numbers in Kotlin 1.5 and with some of the highlighters supporting about 200 languages changes like that can simply slip under the radar.
 
-And sometimes your educated guesses can be wrong. All prefixes and suffixes are case independent except for the long suffix `L` where only the uppercase is valid.
+And sometimes your educated guesses can be wrong. All prefixes and suffixes are case insensitive except for the long suffix `L` where only the uppercase is valid.
 
 Also parsing is hard, having implemented a couple of fixes, the same regex might work for one highlighter but fail in another as they use a different regex-engine that either has less features or is to greedy and doesn't backtrack far enough.
 
-> **🦜 Chirpy the Parrot:** What we really needed is a new standard language grammars to rule them all, so that every language has only one implementation, one source of truth.
-
-Yes in theory that would been awesome, but there are good reason for wanting a custom implementation. For example editors need to deal with broken inputs (while the developer is typing) while some other highlighters of static content might decide against it so that the user doesn't even need to copy the code from Stackoverflow into their IDE as it is visibly broken.  
-
-However, there are a _some_ quasi standards, many highlighters reuse TextMate grammars or TreeSitter grammars. One library for Go, [chroma](https://github.com/alecthomas/chroma) parses the Python soucecode of [Pygments](https://pygments.org/) to generate it's own (admitedly similar) grammar files.
-
-
-A notable mention in all of this, however is [Rouge](https://rouge.jneen.net/) a highlighting that did handle everything I threw at it and has an implementation that is remarkably close to the official Kotlin grammar.
-
 ## Remarks
 
-While this post mostly highlights issues (pun intended) in open source libraries it's not my intention to blame anyone here. Many of them do support a huge amount of languages and keeping up with syntax changes is impossible for what if often just a side project of a single person.
-
-Instead, I want to thank you, for making it so much easier communicate about code (especially for those of us with dyslexia).
+While this post mostly highlights issues (pun intended) in open source libraries it's not my intention to blame anyone here. I'm really glad they do exist and having looked into many of them and fixing some issues, I'm so gland someone has made the effort of to maintaining them which makes reading code so much easier (especially for those of us with dyslexia).
 
 I want to take this space of unused internet realestate to thank my friends for the alternative titles they suggested. They made me laugh pretty hard so you might enjoy them too:
 
@@ -273,3 +243,6 @@ I want to take this space of unused internet realestate to thank my friends for 
 - All Number literals have a right to be highlighted
 - Number literal(ly) broken: What syntax highlighters get wrong
 - Fixing Kotlin number highlighters with this one simple trick; Developers are shocked!
+
+
+🦋 [Comment on Bluesky](www.orf.at)

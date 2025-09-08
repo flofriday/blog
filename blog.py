@@ -223,6 +223,10 @@ class CustomHtmlProducer(HtmlProducer):
         self._output += html.escape(node.code)
         self._output += "</code></pre>\n"
 
+    def visit_comment(self: Self, node: CommentNode):
+        # Skip comments on blog posts
+        return
+
 
 def compile_post(post: str, template: Template, src: str, dst: str, config: dict):
     start_time = time.perf_counter()
