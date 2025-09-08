@@ -8,7 +8,7 @@ from textwrap import dedent
 import time
 from typing import Optional, Self
 from meltdown import MarkdownParser, HtmlProducer
-from meltdown.Nodes import CodeBlockNode
+from meltdown.Nodes import CodeBlockNode, CommentNode
 import os
 import re
 import shutil
