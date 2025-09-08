@@ -131,11 +131,42 @@ You can say a lot good things about Regex but it won't win any prices for readab
 ## Bad highlighting all the way down
 
 Ok so we investigated two out of two open source solutions and they get Kotlin's
-number literals wrong. That seems pretty unlikely, what are the odds of that?
+number literals wrong. That seems pretty unlikely. _What are the odds of that?_
 
-So from the rules above I patched together a simple file with a handful of test cases and pasted it into any highlighting library I could get my hands on. Which in the end allowed me to produce this little gallery of bad highlights.
+So far I stumbled across the higlighting problem by accident, but to see if it's a broader problem it would be much easier to to have an test file we can past into each. Obviously, I could also always dig into the codebase and compare that to the mental model I have in my head, but having an exhaustive test-set to copy and paste isn't just less error-prone but also much quicker to validate. So I took the original grammar from the spec and instead of using it to create a parser I wrote a [generator for valid literals](https://gist.github.com/flofriday/1ff27a1324a3fa92c5a614e46b43dd37).
 
-_TODO_
+After manifesting some utility functions into existance, the generator code ended up looking remarkibly similar to the EBNF grammar it implemented, making it easy to verify for correctness. As a side note I'm a big fan of copying the spec into sourcecode.
+
+```kotlin
+/**
+ * Grammar:
+ * [DecDigits] '.' DecDigits [DoubleExponent]
+ * | DecDigits DoubleExponent
+ */
+fun doubleLiteral(): List<String> =
+    either(
+        optional(decDigits())
+            .add(".")
+            .add(decDigits())
+            .optional(doubleExponent()),
+        decDigits()
+            .add(doubleExponent())
+    )
+```
+
+With my cute 3k lines of testcases (I might have overdone it just a little) it was quite easy to quickly get a rough overview _if_ and _where_ the issues in a highlighter might be.
+
+As a next reasonable step I went on a fever dream like rampage pasting that snippet into any code editor and highlighter library demo page I could think of. 
+
+Actually, this reminds me of another point, if you ever find yourself mainting a highlighter 1) good luck with rejecting a never-ending stream of unsoliceted PRs for languages with a single digit userbase, even when represented in binary format and 2) please let me try your library in the browser. With the current state of WASM and basically free hosting with GitHub pages there is almost no excuses not to. I know that it might be impractically slow and the bundle might be too large for production-use but when I'm _shopping_ for a highlighter my first priority is it's quality and an interactive demo lets me figure that out so much faster.
+
+After the initial high of pasting that code into everything I walked away with two realizations. First, while there are a lot of editors, libraries etc that do highlighting, there aren't 
+
+From there it was mostly a task of grepping through the codebase for any mention of Kotlin finding the code responsible and adjusting it as needed.
+
+<!-- So from the rules above I patched together a simple file with a handful of test cases and pasted it into any highlighting library I could get my hands on. Which in the end allowed me to produce this little gallery of bad highlights.
+ -->
+<!-- _TODO_
 
 - CodeMirror
 - Monaco
@@ -147,7 +178,7 @@ _TODO_
 - treesiter
 - shiki
 - sublime text
-- bat
+- bat -->
 
 ## All numbers have the literal right to be highlighted
 
@@ -158,7 +189,7 @@ I guess it's time to get our hands dirty and contribute back.
 <!--
 As a good open-source loving person that used most many of the libraries mentioned above (directly or indirectly) there is really only thing to do: **Fixing the problem**.
 -->
-
+<!-- 
 Till now I used to play around to with each highlighter until I find a problem, but if we are going to fix them it would be really useful to have a test-set. Obviously, I could also always dig into the codebase and compare that to the mental model I have in my head, but having an exhaustive test-set to copy and paste isn't just less error-prone but also much quicker to validate. So I took the original grammar from the spec and instead of using it to create a parser I wrote a [generator for valid literals](https://gist.github.com/flofriday/1ff27a1324a3fa92c5a614e46b43dd37).
 
 With a few utility functions that map closely to EBNF grammar the Kotlin code looked remarkably similar to the the grammar, making it easy to verify the correctness.
@@ -179,7 +210,7 @@ fun doubleLiteral(): List<String> =
     )
 ```
 
-With my cute 3k lines of testcases (I might have overdone it just a little) it was quite easy to quickly get a rough overview _if_ and _where_ the issues in a highlighter might be. From there it was mostly a task of grepping through the codebase for any mention of Kotlin finding the code responsible and adjusting it as needed.
+With my cute 3k lines of testcases (I might have overdone it just a little) it was quite easy to quickly get a rough overview _if_ and _where_ the issues in a highlighter might be. From there it was mostly a task of grepping through the codebase for any mention of Kotlin finding the code responsible and adjusting it as needed -->
 
 While I already had a complete regex for a correct parsing and most libraries do use regex for lexing (which is a totally valid for lexing) I didn't just paste it in there. Some project had only a quite simplistic approach and there it made sense to replace the little they had with a more sophisticated one, but others did only lack some corner cases so there I tried the least invasive approach and only made changesonly changes where it was necessary.
 
