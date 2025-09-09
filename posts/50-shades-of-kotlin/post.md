@@ -1,16 +1,17 @@
 ---
 title: 50uL Shades of Kotlin: Why your numbers long for color
-date: 2025-09-04
+date: 2025-09-09
 image: some_image_for_social_preview.png
 description: This is just a new post.
-draft: true
 ---
 
 Recently I was investigating some bug in my branch of the Kotlin compiler and suddenly I had a hunch that my code probably was confused by some inlining. So to quickly verify that idea, my muscle memory rushed me to the already open tab of [*Compiler Explorer*](https://godbolt.org/).
 
+> **🦜 Chirpy the Parrot:** Compiler Explorer (formerly Godbolt) is a tool that let's you try out different compilers and inspect the assembly, JVM Bytecode etc that they produce.
+
 So I pasted the code, Kotlin target already preselected from a long forgotten past experiment and – *Huh*, Compiler Explorer doesn't correctly highlight my code.
 
-That's weird, the code is correct, the compiler ran, I see the bytecode that confirms that inlining takes place which will be a cause for many future headaches but I already don't care about that anymore. Why doesn't Godbolt correctly highlight `3uL`?
+That's weird, the code is correct, the compiler ran, I see the bytecode that confirms that inlining takes place which will be a cause for many future headaches but I already don't care about that anymore. Why doesn't Compiler Explorer correctly highlight `3uL`?
 
 Well at least there is still the trusty [Kotlin Playground](https://play.kotlinlang.org/), let's paste it in there and voilà – _WHAT?_ Even that doesn't highlight the suffix?
 
@@ -77,7 +78,7 @@ val fixned = 123l   // Error: Use 'L' instead of 'l'.
 
 Well well well, guess who relied on an open-source solution for his blog's code highlighting?
 
-Since Kotlin 1.1 you can also use underscores inside nunbers to seperate them (but they must appear in the middle):
+Since Kotlin 1.1 you can also use underscores inside numbers to separate them (but they must appear in the middle):
 
 ```kotlin
 val million = 1_000_000
@@ -103,7 +104,7 @@ val twoZeros = 00
 val may = 05
 ```
 
-We're almost done, but floating points can also directly start with a dot or can contain the _E Noation_.
+We're almost done, but floating points can also directly start with a dot or can contain the _E Notation_.
 
 ```kotlin
 val x = .123
@@ -160,38 +161,41 @@ As a next reasonable step I went on a fever-dream like rampage pasting that snip
 
 Actually, this reminds me of another point, if you ever find yourself maintaining a highlighter 1) Congratulation 2) good luck with rejecting a never-ending stream of unsolicited PRs for languages with a single digit userbase, even when represented in binary format and 3) please let me try your library in the browser. With the current state of WASM and basically free hosting with GitHub pages there is almost no excuses not to. I know that it might be impractically slow and the bundle might be too large for production-use but when I'm _shopping_ for a highlighter my first priority is it's quality and an interactive demo lets me figure that out so much faster.
 
-After the initial high of pasting that code into everything I walked away with two realizations. First, almost everyone has problems. And second, while there are a lot of editors, libraries, tools and websites that do highlighting, there aren't _that_ many sources that reimplement a parser for Kotlin.
+After the initial high of pasting that code into everything I could think of, I walked away with two realizations. First, almost every highlighter struggles with Kotlin's numbers. And second, while there are a lot of editors, libraries, tools and websites that do highlighting, there aren't _that_ many sources that reimplement a parser for Kotlin.
 
-The more obvious examples are Discord or StackOverflow that both rely on a library to do the highlighting (in that case highlight.js). But then there are some libraries that ingest a textmate grammar or treesitter grammar. Or one golang library that has a tool that can parse python code from pygments (another library) to generate grammar definition in a custom XML file format (kinda crazy but I love it).
+The more obvious examples are Discord or StackOverflow that both rely on a library to do the highlighting (in that case highlight.js). But then there are some libraries that ingest a textmate grammar or treesitter grammar. Or the one golang library _chroma_ that has a tool that can parse python code from _pygments_ to generate grammar definition in a custom XML file format (kinda crazy but I love it).
 
 So to get a overview how all of this relates to each other I crafted that following graph of popular libraries and some of my favorite tools:
 
 ![Graph](graph.png)
-(_Temporary image, final one will be with icons and co_)
-
-<!-- So from the rules above I patched together a simple file with a handful of test cases and pasted it into any highlighting library I could get my hands on. Which in the end allowed me to produce this little gallery of bad highlights.
- -->
-<!-- _TODO_
-
-- CodeMirror
-- Monaco
-- highlight.js
-- prism.js
-- rainbow.js
-- pygments
-- rouge (is good)
-- treesiter
-- shiki
-- sublime text
-- bat -->
 
 ## All numbers have the literal right to be highlighted
 
-_Maybe start with a note why highlighting is even important? A first line of defesnse against wrong code?_
+I know overall this is somewhat of a minor problem, the notations are somewhat rare and even without correct highlighting you can still read the code and get the point. However, I do think of it as a first line of defense against bad code. I actually vividly remember the first time I started coding and being pleasantly surprised how _friendly_ the code editor looked with all it's colors. Especially as a beginner when you're unsure with every keystroke you type, it makes such a difference when the correct keywords light up in another color to tell you that you are on the right path.
 
 > **🦜 Chirpy the Parrot:** So you found a minor systemic bug nobody really cares about, what ya gonnna do about it?
 
 I guess it's time to get our hands dirty and write some code.
+
+<!-- Monaco story continued -->
+We need to start somewhere, so let's teach Monaco, and once the fixed version is published Compiler Explorer, how to correctly highlight numbers. Luckily it is hosted on GitHub, which makes sense since both are Microsoft products, though screenshot of the outdated Firefox in the README makes me chuckle a bit. But this means we can use the search for any reference of Kotlin in the repo, before we even decide to clone it.
+
+The search reveals a couple of files, where `src/basic-languages/kotlin/kotlin.ts` looks the most promising and after we scroll through the contents that look suspiciously like a custom grammar format for a parser, we find the following lines.
+
+```typescript
+// numbers
+[/(@digits)[eE]([\-+]?(@digits))?[fFdD]?/, 'number.float'],
+[/(@digits)\.(@digits)([eE][\-+]?(@digits))?[fFdD]?/, 'number.float'],
+[/0[xX](@hexdigits)[Ll]?/, 'number.hex'],
+[/0(@octaldigits)[Ll]?/, 'number.octal'],
+[/0[bB](@binarydigits)[Ll]?/, 'number.binary'],
+[/(@digits)[fFdD]/, 'number.float'],
+[/(@digits)[lL]?/, 'number'],
+```
+
+Even on a quick look we can find handling for number suffixes but no mention of a `u` but instead the forbidden lowercase `l` and `d` or `D` which Java uses for double literals.
+
+The repo cloned and after some struggling a test setup, we can finally play with tweaking the regex until accepts all valid inputs. Setting up the development environment was a bit frustrating as the CLI command didn't mentioned didn't use the updated syntax files and so eventually I gave up and opened the repository in VSCode where the launch config worked on the first try (but why did it open the tool in Chrome, when Firefox is my default browser).
 
 While we already have a regex that we can apply for correct lexing and most highlighters use regex for this part, it isn't as easy as just pasting that in an opening a PR. To help out the maintainers reviewing the changes it makes much more sense to see what's already there and if only a single edge-case is missing we'll try to be the good surgon we always knew we could be and only do least invasive procedure necessary.
 
@@ -208,19 +212,14 @@ val partial = 1_
 val partialOct = 0x
 ```
 
-For such behaivor I decided on a case by case basis what the current status qou was in each project.
+So with the Koltin parser extended I also added some testcases to verify that everything keeps working correctly and opened my PR.
 
-Finally we end up with a short list of completed PRs – that I'll now promise to keep updating but more likely will eventually forget – and a longer backlog for eventual _nerd-sniping_:
+The process for other highlighters was quite similar so that we finally end up with a short list of completed PRs – that I'll now promise to keep updating but will most likely eventually forget:
 
 - [Monaco](https://github.com/microsoft/monaco-editor/pull/4973)
 - [CodeMirror](https://github.com/codemirror/legacy-modes/pull/23)
 - [highlight.js](https://github.com/highlightjs/highlight.js/pull/4307)
 - [Pygments](https://github.com/pygments/pygments/pull/2961)
-- _prism.js_
-- _treesiter_
-- _shiki_
-- _sublime text_
-- _bat_
 
 > **🦜 Chirpy the Parrot:** So what did they get wrong about Kotlin's number parsing?
 
@@ -246,3 +245,4 @@ I want to take this space of unused internet realestate to thank my friends for 
 
 
 🦋 [Comment on Bluesky](www.orf.at)
+<!-- *Comment on 🦋 [Bluesky](www.orf.at)* -->
