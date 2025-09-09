@@ -1,6 +1,7 @@
 ---
 title: 50uL Shades of Kotlin: Why your numbers long for color
 date: 2025-09-09
+image: social.png
 description: A highlighting bug sent me down a rabbit hole of grammars, lexers and contributions.
 ---
 
