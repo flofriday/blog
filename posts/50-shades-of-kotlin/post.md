@@ -1,8 +1,7 @@
 ---
 title: 50uL Shades of Kotlin: Why your numbers long for color
 date: 2025-09-09
-image: some_image_for_social_preview.png
-description: This is just a new post.
+description: A highlighting bug sent me down a rabbit hole of grammars, lexers and contributions.
 ---
 
 Recently I was investigating some bug in my branch of the Kotlin compiler and suddenly I had a hunch that my code probably was confused by some inlining. So to quickly verify that idea, my muscle memory rushed me to the already open tab of [*Compiler Explorer*](https://godbolt.org/).
