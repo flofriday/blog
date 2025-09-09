@@ -244,5 +244,4 @@ I want to take this space of unused internet realestate to thank my friends for 
 - Fixing Kotlin number highlighters with this one simple trick; Developers are shocked!
 
 
-🦋 [Comment on Bluesky](www.orf.at)
-<!-- *Comment on 🦋 [Bluesky](www.orf.at)* -->
+🦋 [Comment on Bluesky](https://bsky.app/profile/flofriday.bsky.social/post/3lygdijv7m22u)
