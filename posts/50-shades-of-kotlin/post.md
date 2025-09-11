@@ -15,7 +15,7 @@ That's weird, the code is correct, the compiler ran, I see the bytecode that con
 
 Well at least there is still the trusty [Kotlin Playground](https://play.kotlinlang.org/), let's paste it in there and voilà – _WHAT?_ Even that doesn't highlight the suffix?
 
-Ok back to [IntelliJ IDEA](https://www.jetbrains.com/idea/), I **need** to see at least one colored number literal, and luckily the most common IDE for Kotlin does do it right.
+Ok back to [IntelliJ IDEA](https://www.jetbrains.com/idea/), I **need** to see at least one colored number literal, and luckily the most common IDE for Kotlin does get it right.
 
 ## What's going on here?
 
