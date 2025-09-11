@@ -221,6 +221,7 @@ The process for other highlighters was quite similar so that we finally end up w
 - [highlight.js](https://github.com/highlightjs/highlight.js/pull/4307)
 - [Pygments](https://github.com/pygments/pygments/pull/2961)
 - [Chroma](https://github.com/alecthomas/chroma/pull/1139)
+- [fwcd/vscode-kotlin](https://github.com/fwcd/vscode-kotlin/pull/177) (most popular VSCode extension)
 
 > **🦜 Chirpy the Parrot:** So what did they get wrong about Kotlin's number parsing?
 
