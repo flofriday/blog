@@ -15,11 +15,11 @@ That's weird, the code is correct, the compiler ran, I see the bytecode that con
 
 Well at least there is still the trusty [Kotlin Playground](https://play.kotlinlang.org/), let's paste it in there and voilà – _WHAT?_ Even that doesn't highlight the suffix?
 
-Ok back to [IntelliJ IDEA](https://www.jetbrains.com/idea/), I **need** to see at least one colored number literal, and luckily the most common IDE for Kotlin does get it right.
+Ok back to [IntelliJ IDEA](https://www.jetbrains.com/idea/), I **need** to see at least one colored number literal to save my sanity, and luckily the most common IDE for Kotlin does get it right.
 
 ## What's going on here?
 
-It's safe to assume that Compiler Explorer with such a wide array of supported languages and a huge pile of other difficult problems to solve (like [92 million yearly compilations](https://xania.org/202506/how-compiler-explorer-works)) doesn't maintain it's own language parsing and code editing framework. So let's grab our trenchcoat and magnifier glass and cosplay as the world's most famous detective.
+It's safe to assume that Compiler Explorer with such a wide array of supported languages and a huge pile of other difficult problems to solve (like [92 million yearly compilations](https://xania.org/202506/how-compiler-explorer-works)) doesn't maintain its own language parsing and code editing framework. So let's grab our trenchcoat and magnifier glass and cosplay as the world's most famous detective.
 
 _Right click -> Inspect -> Scroll -> Click -> Scroll_ ... and there we have the culprit, [*Manaco - The Editor of the Web*](https://microsoft.github.io/monaco-editor/).
 A quick google search later and on the Monaco Playground we can verify that indeed the bug seems to originate from here.
@@ -30,7 +30,7 @@ Glancing over the [ReadMe](https://github.com/microsoft/monaco-editor?tab=readme
 
 _Wait_ does that mean, that the bug actually originates from VS Code?
 
-Well ... no. While the Monaco Core does call the VSCode repo it's home, it doesn't contain the highlighting code, so the bug is isolated to Monaco. This also means that while Monaco is able to highlight Kotlin, vanilla VSCode without plugins isn't.
+Well ... no. While the Monaco Core does call the VSCode repo its home, it doesn't contain the highlighting code, so the bug is isolated to Monaco. This also means that while Monaco is able to highlight Kotlin, vanilla VSCode without plugins isn't.
 
 Going though a similar investigation sprint for Kotlin Playground we find that
 here too, they depend on an open source solution, but in this case it's [*CodeMirror*](https://codemirror.net/).
@@ -134,7 +134,7 @@ You can say a lot good things about Regex but it won't win any prices for readab
 Ok so we investigated two out of two open source solutions and they get Kotlin's
 number literals wrong. That seems pretty unlikely. _What are the odds of that?_
 
-So far I stumbled across the higlighting problem by accident, but to see if it's a broader problem it would be much easier to to have an test file we can past into each. Obviously, I could also always dig into the codebase and compare that to the mental model I have in my head, but having an exhaustive test-set to copy and paste isn't just less error-prone but also much quicker to validate. So I took the original grammar from the spec and instead of using it to create a parser I wrote a [generator for valid literals](https://gist.github.com/flofriday/1ff27a1324a3fa92c5a614e46b43dd37).
+So far I stumbled across the higlighting problem by accident, but to see if it's a broader problem it would be much easier to to have a test file we can past into each. Obviously, I could also always dig into the codebase and compare that to the mental model I have in my head, but having an exhaustive test-set to copy and paste isn't just less error-prone but also much quicker to validate. So I took the original grammar from the spec and instead of using it to create a parser I wrote a [generator for valid literals](https://gist.github.com/flofriday/1ff27a1324a3fa92c5a614e46b43dd37).
 
 After manifesting some utility functions into existence, the generator code ended up looking remarkably similar to the EBNF grammar it implemented, making it easy to verify for correctness. As a side note I'm a big fan of copying the spec into sourcecode.
 
