@@ -90,7 +90,9 @@ def copy_files(src: str, dst: str, ignore: Optional[list[str]] = None):
 
     # Remove all deleted files
     for dead_file in [
-        f for f in old_files if (f not in new_files and f not in ["index.html", "rss.xml"])
+        f
+        for f in old_files
+        if (f not in new_files and f not in ["index.html", "rss.xml"])
     ]:
         print("Remove: ", os.path.join(dst, dead_file))
         os.remove(os.path.join(dst, dead_file))
@@ -195,7 +197,9 @@ def compile_home(src: str, dst: str, config: dict):
             continue
 
         # Map metadata to a post preview
-        preview = PostPreview(meta.title, meta.description, meta.date, "posts/" + post + "/")
+        preview = PostPreview(
+            meta.title, meta.description, meta.date, "posts/" + post + "/"
+        )
         previews.append(preview)
 
     previews.sort(key=lambda p: p.date, reverse=True)
@@ -214,7 +218,7 @@ def compile_home(src: str, dst: str, config: dict):
 
     # Also copy all static files that are not templates into the root of the dst
     copy_files(os.path.join(src, "static"), dst)
-    
+
     with open(rss_template_path) as rss:
         template = Template(
             rss.read(),
@@ -223,13 +227,13 @@ def compile_home(src: str, dst: str, config: dict):
                 default_for_string=True,
             ),
         )
-    
-    with open(rss_path, "w") as index:
-        index.write(template.render(
-            previews=previews,
-            last_build_date=datetime.now(timezone.utc)
-            ))
 
+    with open(rss_path, "w") as index:
+        index.write(
+            template.render(
+                previews=previews, last_build_date=datetime.now(timezone.utc)
+            )
+        )
 
     print(f"\tBuilt home in {(time.perf_counter() - start_time) * 1000:.0f}ms")
 
