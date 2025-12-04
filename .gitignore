@@ -2,3 +2,6 @@ dist/
 .ruff_cache/
 venv/
 .DS_Store
+.idea
+.vscode
+__pycache__

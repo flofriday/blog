@@ -65,12 +65,18 @@
       </div>
       <h1>I am flofriday</h1>
       <p>
-        a computer-science student currently doing my masters at
-        <a href="https://www.tuwien.at/en/">TU Wien</a> (Austria). Interested in
-        all aspects of computing with a special focus on compilers.
+        a software engineer working on the 
+        <a href="https://kotlinlang.org/">Kotlin</a> compiler at 
+        <a href="https://www.jetbrains.com/">JetBrains</a> and 
+        doing my masters in computer-science at 
+        <a href="https://www.tuwien.at/en/">TU Wien</a> (Austria). Fascinated 
+        by all aspects of computing but currently enjoying my deep fall down the
+        compiler engineering rabbit whole.
       </p>
       <p>
         <a href="https://github.com/flofriday">GitHub</a>
+        • <a href="https://bsky.app/profile/flofriday.bsky.social">Bluesky</a>
+        • <a href="https://flofriday.dev/rss.xml">RSS</a>
       </p>
 
       <h2>Blog Posts</h2>

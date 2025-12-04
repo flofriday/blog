@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+ <title>flofriday</title>
+ <description>Blog posts from flofriday</description>
+ <link>https://flofriday.dev</link>
+ <language>en-us</language>
+ <lastBuildDate>{{last_build_date.strftime('%a, %d %b %Y %H:%M:%S %z')}}</lastBuildDate>
+
+ {% for preview in previews %}
+ <item>
+  <title>{{preview.title}}</title>
+  <description>{{preview.description}}</description>
+  <link>https://flofriday.dev/{{preview.url}}</link>
+  <guid>https://flofriday.dev/{{preview.url}}</guid>
+  <pubDate>{{preview.date.strftime('%a, %d %b %Y %H:%M:%S %z')}}</pubDate>
+ </item>
+ {% endfor %}
+
+</channel>
+</rss>
