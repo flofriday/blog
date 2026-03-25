@@ -22,7 +22,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "jinja2", specifier = ">=3.1.6" },
-    { name = "meltdown", specifier = ">=0.0.6" },
+    { name = "meltdown", specifier = ">=0.0.8" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "watchdog", specifier = ">=6.0.0" },
 ]
@@ -75,11 +75,11 @@ wheels = [
 
 [[package]]
 name = "meltdown"
-version = "0.0.6"
+version = "0.0.8"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/3f/90/72e0d540214515eb4aaf929df02301cb957098fda68a1ebeb7c5a5d18ec0/meltdown-0.0.6.tar.gz", hash = "sha256:7004a89dc6c8e845530aa9aedb946c9feac30eda6a4abc677bce1caaa29495b9", size = 5416, upload-time = "2025-08-31T18:11:08.503Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/9e/2548b19930a6ea3d9f0c86bc765afc21137128e995bd0390d7c233f9f639/meltdown-0.0.8.tar.gz", hash = "sha256:6e69f00b9e39802c33daa291d575e1d013d4f9cd7d8bf6aed56c8df13db2d49c", size = 5841, upload-time = "2026-03-25T12:04:02.327Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/41/ae43fb49790ca72018afe99e610a57bd3b5de91f972b373fcf204bfbcbec/meltdown-0.0.6-py3-none-any.whl", hash = "sha256:99c93b8c7f51dad8a167a7e1737c86c73414fa46377282b369f45f223b6c790b", size = 6868, upload-time = "2025-08-31T18:11:06.667Z" },
+    { url = "https://files.pythonhosted.org/packages/99/5b/e2d21ddc73739a5c3fe226509e84df1739d4555013e2a81a93208c5dd25a/meltdown-0.0.8-py3-none-any.whl", hash = "sha256:9ffe7233858e35d61ef3c9e5f0a53935e928f4b9c091b965fced153991b5c914", size = 7258, upload-time = "2026-03-25T12:04:00.789Z" },
 ]
 
 [[package]]
