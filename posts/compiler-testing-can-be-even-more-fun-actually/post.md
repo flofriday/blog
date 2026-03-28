@@ -1,11 +1,12 @@
 ---
 title: Compiler testing can be even more fun actually
-date: 2026-03-25
+date: 2026-03-26
 image: some_image_for_social_preview.png
-description: This is just a new post.
+description: Compilers must be stable, really stable, but at least we can make testing them a lot of fun.
 draft: true
 ---
 
+<!-- NOTES: Add social image -->
 
 This post is mostly a response to Giacomo's amazing article [_Testing can be fun, actually_](https://giacomocavalieri.me/writing/testing-can-be-fun-actually) on snapshot testing. 
 
@@ -47,7 +48,7 @@ A couple of months ago when I designed the snapshot tests for [OpenVADL](https:/
 and so far we're beyond happy with it. 
 
 Since our LSP is still quite young and doesn't have any hover support yet, I 
-cannot show you the aquivalent for OpenVADL, but we do have quite a few tests
+cannot show you the same test for OpenVADL, but we do have quite a few tests
 for compiler errors:
 
 ![OpenVadl Snapshot](vadl-snapshot.png)
@@ -55,6 +56,8 @@ for compiler errors:
 Working with these is just a bliss, the editor already adds squiggly lines to
 the expression causing an error and again you can quickly verify the reported
 error by hovering over the section.
+
+Many of the tests only verify which errors are thrown and or if a successful compilation is possible, but they can also include AST dumps or VIAM (our custom IR) dumps.
 
 Honestly, that's the gist of what I wanted to say, everything that follows is 
 much less of a suggestion and more of a this is how we do testing in OpenVADL
@@ -75,6 +78,8 @@ mention here, it basically does the following:
 
 This makes adding new tests as hard as copy-pasting a file into the correct
 folder.
+
+To add a special dump (like AST or IR) to the snapshot the test only have to include a special comment like `// INCLUDE-AST-DUMP`.
 
 Unfortunately, this has one drawback, for which I don't have any clean solution,
 in that you cannot easily run just a single snapshot test, but you have to
@@ -97,7 +102,10 @@ But normally you don't even use these generated tests directly, instead there is
 a [custom IntelliJ Kotlin Development plugin](https://plugins.jetbrains.com/plugin/27616-kotlin-compiler-devkit) that automatically detects if you have such a snapshot
 test open and injects a custom UI to run the test.
 
-<!-- IMG ? -->
+![Kotlin IDE plugin UI](kotlin-ide-plugin.png)
+
+So far, investing that much into custom tooling wasn't necessary yet for 
+OpenVADL but I think in the future building such a plugin is a real option.
 
 ## A bit of IDE Magic 
 
