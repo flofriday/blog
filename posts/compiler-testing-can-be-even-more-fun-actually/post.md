@@ -1,6 +1,6 @@
 ---
 title: Compiler testing can be even more fun actually
-date: 2026-03-26
+date: 2026-03-29
 image: some_image_for_social_preview.png
 description: Compilers must be stable, really stable, but at least we can make testing them a lot of fun.
 draft: true
@@ -30,7 +30,7 @@ The good thing though is that nothing here is set in stone and so if we modify t
 I really like this format, the code looks and feels like code, the whole 
 snapshot is a valid file that the compiler can understand and since we also
 renamed the file from `.snap` to `.gleam` suffix we also get syntax
-higlighting for free. Even better since this test tests the LSP, we can 
+highlighting for free. Even better since this test tests the LSP, we can 
 even quickly verify the test in our editor by simply hovering over the mentioned
 variable.
 
