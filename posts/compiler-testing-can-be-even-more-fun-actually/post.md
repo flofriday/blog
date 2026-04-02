@@ -1,12 +1,10 @@
 ---
 title: Compiler testing can be even more fun actually
-date: 2026-03-29
-image: some_image_for_social_preview.png
+date: 2026-04-02
+image: social.png
 description: Compilers must be stable, really stable, but at least we can make testing them a lot of fun.
-draft: true
+draft: false
 ---
-
-<!-- NOTES: Add social image -->
 
 This post is mostly a response to Giacomo's amazing article [_Testing can be fun, actually_](https://giacomocavalieri.me/writing/testing-can-be-fun-actually) on snapshot testing. 
 
@@ -29,8 +27,8 @@ The good thing though is that nothing here is set in stone and so if we modify t
 
 I really like this format, the code looks and feels like code, the whole 
 snapshot is a valid file that the compiler can understand and since we also
-renamed the file from `.snap` to `.gleam` suffix we also get syntax
-highlighting for free. Even better since this test tests the LSP, we can 
+renamed the file from `.snap` to `.gleam` file extension we also get syntax
+highlighting for free. Even better since we're testing the LSP here, we can 
 even quickly verify the test in our editor by simply hovering over the mentioned
 variable.
 
