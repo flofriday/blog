@@ -47,11 +47,14 @@
   <body>
     <header>
       <div class="hero">
-        <h1 class="title content">{{ title }}</h1>
+        <h1 
+          style="view-transition-name: header-{{id}};"
+          class="title content">{{ title }}
+        </h1>
       </div>
       <div class="content">
         <p style="width: 100%; display: flex; justify-content: space-between">
-          <i>{{ date }}</i>
+          <i style="view-transition-name: date-{{id}};">{{ date }}</i>
           <i>by <a href="/">flofriday</a></i>
         </p>
       </div>

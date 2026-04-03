@@ -110,6 +110,7 @@ def copy_files(src: str, dst: str, ignore: Optional[list[str]] = None):
 
 @dataclass
 class PostMetadata:
+    id: str = None
     name: str = None
     title: str = None
     date: datetime = None
@@ -117,6 +118,11 @@ class PostMetadata:
     description: str = None
     image: str = None
     other: dict[str, str] = field(default_factory=dict)
+
+def name_to_id(name: str) -> str:
+    id = name.lower().replace("-", " ")
+    id = "".join(c for c in name if c.isalnum() or c == "-")
+    return id
 
 
 # Formats from an unstructured dictionary to the PostMetadata structure and
@@ -126,6 +132,7 @@ def load_post_metadata(
 ) -> PostMetadata:
     meta = PostMetadata()
     meta.name = post
+    meta.id = name_to_id(post)
     other = {}
     for key, value in raw_metadata.items():
         # Store the data
@@ -170,6 +177,7 @@ def compile_home(src: str, dst: str, config: dict):
 
     @dataclass
     class PostPreview:
+        id: str
         title: str
         description: str
         date: datetime
@@ -198,6 +206,7 @@ def compile_home(src: str, dst: str, config: dict):
 
         # Map metadata to a post preview
         preview = PostPreview(
+            meta.id,
             meta.title, meta.description, meta.date, "posts/" + post + "/"
         )
         previews.append(preview)
@@ -285,6 +294,7 @@ def compile_post(post: str, template: Template, src: str, dst: str, config: dict
         f.write(
             template.render(
                 content=html,
+                id=meta.id,
                 title=meta.title,
                 description=meta.description,
                 image=meta.image,

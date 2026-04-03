@@ -78,14 +78,16 @@
 
       <h2>Blog Posts</h2>
       {% for p in previews %}
-      <p style="display: flex">
-        <i style="flex: 0 0 130px">
+      <article style="display:flex; flex-wrap: wrap; margin: 1.3em 0; line-height: 1.4">
+        <time style="min-inline-size: 7.5em; flex-grow: 1; font-style: italic; view-transition-name: date-{{p.id}};">
           {{ p.date_str() }}
-        </i>
-        <strong>
-          <a href="{{ p.url }}">{{ p.title }}</a>
-        </strong>
-      </p>
+        </time>
+        <a
+          style="view-transition-name: header-{{p.id}}; min-inline-size:70%; flex-grow:999"
+          href="{{ p.url }}">
+            <strong>{{ p.title }}</strong>
+        </a>
+      </article>
       {% endfor %}
     </main>
   </body>
