@@ -54,7 +54,9 @@
       </div>
       <div class="content">
         <p style="width: 100%; display: flex; justify-content: space-between">
-          <i style="view-transition-name: date-{{id}};">{{ date }}</i>
+          <time style="min-inline-size: 7.5em; flex-grow: 1; font-style: italic; view-transition-name: date-{{id}};">
+            {{ date }}
+          </time>
           <i>by <a href="/">flofriday</a></i>
         </p>
       </div>
