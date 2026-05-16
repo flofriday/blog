@@ -25,6 +25,15 @@ options:
   -h, --help         show this help message and exit
 ```
 
+## Build with Docker
+
+```
+docker build -t blog .
+docker run -p 8080:80 blog
+```
+
+The blog should now be available at http://localhost:8080
+
 ## Structure
 
 This repository holds all all source code to build my blog and all contents of
