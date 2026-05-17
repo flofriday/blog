@@ -25,21 +25,3 @@ jobs:
 
       - name: Formatting
         run: uv run ruff format --check
-
-  deploy:
-    if: ${{ github.ref_name == 'main' }}
-    runs-on: Ubuntu-24.04
-    steps:
-      - name: deploy on production server
-        uses: appleboy/ssh-action@v1.2.1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script_stop: true
-          script: |
-            cd blog
-            git fetch --all
-            git reset --hard origin/main
-            /home/blog/.local/bin/uv run blog.py build --clean --out /home/blog/html
