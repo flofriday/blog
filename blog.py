@@ -119,6 +119,7 @@ class PostMetadata:
     image: str = None
     other: dict[str, str] = field(default_factory=dict)
 
+
 def name_to_id(name: str) -> str:
     id = name.lower().replace("-", " ")
     id = "".join(c for c in name if c.isalnum() or c == "-")
@@ -206,8 +207,7 @@ def compile_home(src: str, dst: str, config: dict):
 
         # Map metadata to a post preview
         preview = PostPreview(
-            meta.id,
-            meta.title, meta.description, meta.date, "posts/" + post + "/"
+            meta.id, meta.title, meta.description, meta.date, "posts/" + post + "/"
         )
         previews.append(preview)
 
