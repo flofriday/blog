@@ -3,7 +3,7 @@ name = "blog"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.15"
 dependencies = [
     "jinja2>=3.1.6",
     "meltdown>=0.0.8",
