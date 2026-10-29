@@ -1,42 +1,45 @@
+#!/usr/bin/env -S uv run
 import argparse
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
 import html
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-from io import BytesIO
-from textwrap import dedent
-import time
-from typing import Optional, Self
-from meltdown import MarkdownParser, HtmlProducer
-from meltdown.Nodes import CodeBlockNode, CommentNode
 import os
 import re
 import shutil
+import sys
+import time
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+from io import BytesIO
+from textwrap import dedent
+from typing import Self
 
-from jinja2 import Template, select_autoescape
 import toml
-from watchdog.observers import Observer
+from jinja2 import Template, select_autoescape
+from meltdown import HtmlProducer, MarkdownParser
+from meltdown.Nodes import CodeBlockNode, CommentNode
 from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 DATE_FORMAT = "%d %b, %Y"
+
+
+class SourceDirectoryError(Exception):
+    pass
 
 
 def verify_setup(src: str, dst: str):
     # Verify the source directory is in good health
     if not os.path.isdir(src):
-        raise Exception(f"The source directory `{src}` doesn't exist")
+        raise SourceDirectoryError(f"The source directory `{src}` doesn't exist")
 
-    required_files = map(
-        lambda f: os.path.join(src, f),
-        ["config.toml", "home.template", "post.template"],
-    )
+    required_files = (os.path.join(src, f) for f in ["config.toml", "home.template", "post.template"])
     had_error = False
     for file in required_files:
         if not os.path.exists(file):
             print(f"🔥 Required file '{file}' does not exist.")
 
     if had_error:
-        exit(1)
+        sys.exit(1)
 
     # Verify the output directory
     if not os.path.isdir(dst):
@@ -47,12 +50,12 @@ def load_config(args: dict[str, any]) -> dict:
     config_path = os.path.join(args.source, "config.toml")
     if not os.path.isfile(config_path):
         print(f"🔥 Config '{config_path}' doesn't exist.")
-        exit(1)
+        sys.exit(1)
 
     config = toml.load(config_path)
     if "url" not in config:
         print(f"🔥 'url' key not found in '{config_path}'")
-        exit(1)
+        sys.exit(1)
 
     config["show-draft"] = args.show_draft
 
@@ -77,7 +80,7 @@ def is_done(dst: str, *srcs: list[str]):
 # Copies all files (shallow copy) from the src to the dst, excluding the
 # ignore list.
 # Also deletes files that are no longer used.
-def copy_files(src: str, dst: str, ignore: Optional[list[str]] = None):
+def copy_files(src: str, dst: str, ignore: list[str] | None = None):
     if ignore is None:
         ignore = []
 
@@ -240,7 +243,7 @@ def compile_home(src: str, dst: str, config: dict):
     with open(rss_path, "w") as index:
         index.write(
             template.render(
-                previews=previews, last_build_date=datetime.now(timezone.utc)
+                previews=previews, last_build_date=datetime.now(UTC)
             )
         )
 
@@ -354,7 +357,7 @@ def serve(args):
     if args.clean:
         # FIXME: this traps the builder in an infinite loop of rebuilding
         print("🔥 There is  currently a bug making serve with --clean impossible!")
-        exit(1)
+        sys.exit(1)
 
     build(args)
     print(
@@ -478,7 +481,7 @@ def new_post(args):
         os.mkdir(dir_path)
     except FileExistsError as e:
         print(f'🔥 Folder with the name "{e.filename}" already exists.')
-        exit(1)
+        sys.exit(1)
 
     with open(os.path.join(dir_path, "post.md"), "w") as f:
 
