@@ -32,7 +32,9 @@ def verify_setup(src: str, dst: str):
     if not os.path.isdir(src):
         raise SourceDirectoryError(f"The source directory `{src}` doesn't exist")
 
-    required_files = (os.path.join(src, f) for f in ["config.toml", "home.template", "post.template"])
+    required_files = (
+        os.path.join(src, f) for f in ["config.toml", "home.template", "post.template"]
+    )
     had_error = False
     for file in required_files:
         if not os.path.exists(file):
@@ -242,9 +244,7 @@ def compile_home(src: str, dst: str, config: dict):
 
     with open(rss_path, "w") as index:
         index.write(
-            template.render(
-                previews=previews, last_build_date=datetime.now(UTC)
-            )
+            template.render(previews=previews, last_build_date=datetime.now(UTC))
         )
 
     print(f"\tBuilt home in {(time.perf_counter() - start_time) * 1000:.0f}ms")
